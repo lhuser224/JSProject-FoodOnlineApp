@@ -18,7 +18,7 @@ class Navbar extends Component {
     bindEvents() {
         document.getElementById('nav-home').onclick = () => Router.navigate(new HomePage());
         document.getElementById('nav-checkout').onclick = () => Router.navigate(new CheckoutPage());
-        document.getElementById('nav-history').onclick = () => Router.navigate(new HistoryPage());
+        document.getElementById('nav-history').onclick = () => Router.navigate(new SellerDashboard());
         document.getElementById('nav-auth').onclick = () => Router.navigate(new AuthPage());
     }
 }
