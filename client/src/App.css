@@ -48,6 +48,7 @@ body {
 
 .w-100 { width: 100%; }
 .mt-20 { margin-top: 20px; }
+.mb-10 { margin-bottom: 10px; }
 
 /* --- FORMS --- */
 .form-control {
@@ -198,7 +199,7 @@ body {
     overflow: hidden;
     background: #fff;
     /* Ghi đè style container mặc định để full màn hình */
-    position: fixed; 
+    position: fixed;
     top: 0; left: 0; z-index: 200;
 }
 
@@ -590,7 +591,7 @@ body {
 
 .success-icon {
     font-size: 5rem;
-    color: #22c55e; 
+    color: #22c55e;
     margin-bottom: 20px;
 }
 
@@ -613,7 +614,7 @@ body {
 }
 
 #btn-return-menu {
-    background-color: #3b82f6; 
+    background-color: #3b82f6;
     color: white;
     padding: 12px 30px;
     font-size: 1rem;
@@ -736,6 +737,8 @@ body {
 .modal-title { margin-bottom: 15px; font-size: 1.2rem; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .text-left { text-align: left; }
+.text-right { text-align: right; }
+
 /* Nút Switch Slider */
 .switch {
   position: relative;
@@ -763,3 +766,8 @@ body {
 }
 input:checked + .slider { background-color: #28a745; }
 input:checked + .slider:before { transform: translateX(18px); }
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
