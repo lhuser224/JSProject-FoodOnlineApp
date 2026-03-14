@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart, useOrders } from '../hooks/useStore';
 import Navbar from '../components/Navbar';
+import { createOrder } from '../services/orderService';
+import styles from './Checkout.module.css';
 
 export default function Checkout() {
   const { cart, total, removeFromCart, clearCart } = useCart();
@@ -25,7 +27,7 @@ export default function Checkout() {
     removeFromCart(index);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!formData.name || !formData.address || !formData.phone) {
       alert('Vui lòng điền đầy đủ thông tin giao hàng!');
       return;
@@ -36,25 +38,53 @@ export default function Checkout() {
       return;
     }
 
-    // Create order
-    const newOrderId = '#ORD-' + Math.floor(100000 + Math.random() * 900000);
-    const newOrder = {
-      id: newOrderId,
-      date: new Date().toLocaleString(),
-      total: total,
-      status: 'Processing',
-      items: [...cart]
-    };
+    try {
+      // Get user ID (for now use a placeholder - in real app this comes from auth context)
+      const userStr = localStorage.getItem('user');
+      const userId = userStr ? JSON.parse(userStr).user_id : null;
 
-    // Add order to history
-    addOrder(newOrder);
+      if (!userId) {
+        alert('Vui lòng đăng nhập để tiếp tục!');
+        return;
+      }
 
-    // Clear cart
-    clearCart();
+      // Build order items with selected_options as JSON
+      const orderItems = cart.map(item => ({
+        food_id: item.id,
+        quantity: item.quantity || 1,
+        selected_options: {
+          size: item.size || 'M',
+          extras: item.extras || []
+        }
+      }));
 
-    // Show success modal
-    setOrderId(newOrderId);
-    setShowSuccess(true);
+      // Create order payload
+      const orderPayload = {
+        user_id: userId,
+        shop_id: 1, // Default shop ID (should come from context or form)
+        total_price: total,
+        items: orderItems,
+        user_details: {
+          full_name: formData.name,
+          phone: formData.phone,
+          address_detail: formData.address
+        },
+        status: 'Processing'
+      };
+
+      // Create order via service
+      const response = await createOrder(orderPayload);
+
+      // Show success modal
+      setOrderId(response.order_id || '#ORD-' + Math.floor(100000 + Math.random() * 900000));
+      setShowSuccess(true);
+
+      // Clear cart
+      clearCart();
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Lỗi đặt hàng: ' + (error.message || 'Vui lòng thử lại'));
+    }
   };
 
   const handleReturnMenu = () => {
@@ -66,8 +96,8 @@ export default function Checkout() {
     <>
       <Navbar />
 
-      <div className="container checkout-layout">
-        <div className="checkout-form">
+      <div className={`container ${styles.checkoutLayout}`}>
+        <div className={styles.checkoutForm}>
           <h2>Thông tin giao hàng</h2>
           <input
             type="text"
@@ -96,40 +126,25 @@ export default function Checkout() {
           <textarea className="form-control" placeholder="Ghi chú..."></textarea>
         </div>
 
-        <div className="order-summary">
+        <div className={styles.orderSummary}>
           <h3>Đơn hàng của bạn</h3>
 
-          <div className="cart-items-list" style={{ marginBottom: '20px' }}>
+          <div className={styles.cartItemsList}>
             {cart.length === 0 ? (
               <p style={{ color: '#777', fontStyle: 'italic' }}>Giỏ hàng đang trống</p>
             ) : (
               cart.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderBottom: '1px dashed #eee',
-                    padding: '10px 0'
-                  }}
-                >
-                  <div>
+                <div key={index} className={styles.cartItem}>
+                  <div className={styles.cartItemInfo}>
                     <strong>{item.name}</strong>
-                    {item.quantity && <div style={{ fontSize: '0.85rem', color: '#555' }}>x{item.quantity}</div>}
-                    <div style={{ fontSize: '0.9rem', color: '#555' }}>
+                    {item.quantity && <div className={styles.quantity}>x{item.quantity}</div>}
+                    <div className={styles.price}>
                       ${(item.totalPrice || item.price).toFixed(2)}
                     </div>
                   </div>
                   <button
-                    className="btn-remove"
+                    className={styles.btnRemove}
                     onClick={() => handleRemoveItem(index)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'red',
-                      cursor: 'pointer'
-                    }}
                   >
                     <i className="fa-solid fa-trash"></i>
                   </button>
@@ -138,18 +153,9 @@ export default function Checkout() {
             )}
           </div>
 
-          <div
-            style={{
-              borderTop: '2px solid #eee',
-              paddingTop: '15px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '1.2rem',
-              fontWeight: 'bold'
-            }}
-          >
+          <div className={styles.totalRow}>
             <span>Tổng tiền:</span>
-            <span style={{ color: '#ee4d2d' }}>${total.toFixed(2)}</span>
+            <span className={styles.totalPrice}>${total.toFixed(2)}</span>
           </div>
 
           <button className="btn btn-success w-100 mt-20" onClick={handleCheckout}>
@@ -168,41 +174,14 @@ export default function Checkout() {
       </div>
 
       {showSuccess && (
-        <div
-          id="success-modal"
-          className="modal-overlay"
-          style={{
-            display: 'flex',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0,0,0,0.6)',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
-          }}
-        >
-          <div
-            className="modal-content"
-            style={{
-              background: '#fff',
-              borderRadius: '16px',
-              padding: '40px',
-              textAlign: 'center',
-              minWidth: '400px'
-            }}
-          >
-            <div
-              className="success-icon"
-              style={{ fontSize: '60px', color: '#2ecc71', marginBottom: '20px' }}
-            >
+        <div className={styles.successModal}>
+          <div className={styles.successContent}>
+            <div className={styles.successIcon}>
               <i className="fa-solid fa-circle-check"></i>
             </div>
             <h2>Order Confirmed!</h2>
             <p>Your order has been placed successfully.</p>
-            <p className="order-id-text">
+            <p className={styles.orderIdText}>
               Order ID: <strong>{orderId}</strong>
             </p>
             <button className="btn btn-primary" onClick={handleReturnMenu}>

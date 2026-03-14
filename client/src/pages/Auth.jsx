@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login, register, forgotPassword } from '../services/authService';
+import styles from './Auth.module.css';
 
 export default function Auth() {
   const [state, setState] = useState('login'); // login | register | forgot
@@ -7,8 +9,9 @@ export default function Auth() {
     phone: '',
     password: '',
     passwordConfirm: '',
-    name: ''
+    full_name: ''
   });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -16,55 +19,94 @@ export default function Auth() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!formData.phone || !formData.password) {
       alert('Vui lòng điền đầy đủ thông tin!');
       return;
     }
-    alert('Đăng nhập thành công!');
-    navigate('/');
+    if (formData.phone.length > 15) {
+      alert('Số điện thoại tối đa 15 ký tự!');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await login(formData.phone, formData.password);
+      alert('Đăng nhập thành công!');
+      navigate('/');
+    } catch (error) {
+      alert('Lỗi đăng nhập: ' + (error.message || 'Vui lòng thử lại'));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleRegister = () => {
-    if (!formData.name || !formData.phone || !formData.password || !formData.passwordConfirm) {
+  const handleRegister = async () => {
+    if (!formData.full_name || !formData.phone || !formData.password || !formData.passwordConfirm) {
       alert('Vui lòng điền đầy đủ thông tin!');
+      return;
+    }
+    if (formData.phone.length > 15) {
+      alert('Số điện thoại tối đa 15 ký tự!');
       return;
     }
     if (formData.password !== formData.passwordConfirm) {
       alert('Mật khẩu không khớp!');
       return;
     }
-    alert('Đăng ký thành công!');
-    setState('login');
-    setFormData({ phone: '', password: '', passwordConfirm: '', name: '' });
+
+    try {
+      setLoading(true);
+      await register(formData.full_name, formData.phone, formData.password);
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      setState('login');
+      setFormData({ phone: '', password: '', passwordConfirm: '', full_name: '' });
+    } catch (error) {
+      alert('Lỗi đăng ký: ' + (error.message || 'Vui lòng thử lại'));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleForgot = () => {
+  const handleForgot = async () => {
     if (!formData.phone) {
       alert('Vui lòng nhập số điện thoại!');
       return;
     }
-    alert('Mã xác nhận đã được gửi!');
-    setState('login');
+    if (formData.phone.length > 15) {
+      alert('Số điện thoại tối đa 15 ký tự!');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await forgotPassword(formData.phone);
+      alert('Mã xác nhận đã được gửi!');
+      setState('login');
+    } catch (error) {
+      alert('Lỗi: ' + (error.message || 'Vui lòng thử lại'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-bg">
-        <div className="auth-bg-overlay">
+    <div className={styles.authWrapper}>
+      <div className={styles.authBg}>
+        <div className={styles.authBgOverlay}>
           <h1>Food App</h1>
           <p>Đặt món thả ga - Freeship tận nhà</p>
         </div>
       </div>
 
-      <div className="auth-form-container">
-        <div className="auth-box-modern">
+      <div className={styles.authFormContainer}>
+        <div className={styles.authBoxModern}>
           {state === 'login' && (
             <>
-              <h2 className="auth-title">Đăng nhập</h2>
-              <p className="auth-subtitle">Chào mừng bạn quay lại!</p>
+              <h2 className={styles.authTitle}>Đăng nhập</h2>
+              <p className={styles.authSubtitle}>Chào mừng bạn quay lại!</p>
 
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-phone"></i>
                 <input
                   type="text"
@@ -74,7 +116,7 @@ export default function Auth() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-lock"></i>
                 <input
                   type="password"
@@ -83,10 +125,10 @@ export default function Auth() {
                   value={formData.password}
                   onChange={handleInputChange}
                 />
-                <i className="fa-solid fa-eye show-pass"></i>
+                <i className={`fa-solid fa-eye ${styles.showPass}`}></i>
               </div>
 
-              <div className="auth-actions">
+              <div className={styles.authActions}>
                 <label>
                   <input type="checkbox" /> Ghi nhớ tôi
                 </label>
@@ -96,17 +138,17 @@ export default function Auth() {
                     e.preventDefault();
                     setState('forgot');
                   }}
-                  className="link-highlight"
+                  className={styles.linkHighlight}
                 >
                   Quên mật khẩu?
                 </a>
               </div>
 
-              <button className="btn btn-primary w-100 btn-auth" onClick={handleLogin}>
-                Đăng nhập
+              <button className={styles.btnAuth} disabled={loading} onClick={handleLogin}>
+                {loading ? 'Đang xử lý...' : 'Đăng nhập'}
               </button>
 
-              <div className="auth-footer">
+              <div className={styles.authFooter}>
                 Chưa có tài khoản?{' '}
                 <a
                   href="#"
@@ -114,7 +156,7 @@ export default function Auth() {
                     e.preventDefault();
                     setState('register');
                   }}
-                  className="link-highlight"
+                  className={styles.linkHighlight}
                 >
                   Đăng ký ngay
                 </a>
@@ -124,20 +166,20 @@ export default function Auth() {
 
           {state === 'register' && (
             <>
-              <h2 className="auth-title">Tạo tài khoản</h2>
-              <p className="auth-subtitle">Tham gia cộng đồng Food App ngay</p>
+              <h2 className={styles.authTitle}>Tạo tài khoản</h2>
+              <p className={styles.authSubtitle}>Tham gia cộng đồng Food App ngay</p>
 
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-user"></i>
                 <input
                   type="text"
                   placeholder="Họ và tên"
-                  id="name"
-                  value={formData.name}
+                  id="full_name"
+                  value={formData.full_name}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-phone"></i>
                 <input
                   type="text"
@@ -147,7 +189,7 @@ export default function Auth() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-lock"></i>
                 <input
                   type="password"
@@ -157,7 +199,7 @@ export default function Auth() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-lock"></i>
                 <input
                   type="password"
@@ -168,11 +210,11 @@ export default function Auth() {
                 />
               </div>
 
-              <button className="btn btn-primary w-100 btn-auth" onClick={handleRegister}>
-                Đăng ký
+              <button className={styles.btnAuth} disabled={loading} onClick={handleRegister}>
+                {loading ? 'Đang xử lý...' : 'Đăng ký'}
               </button>
 
-              <div className="auth-footer">
+              <div className={styles.authFooter}>
                 Đã có tài khoản?{' '}
                 <a
                   href="#"
@@ -180,7 +222,7 @@ export default function Auth() {
                     e.preventDefault();
                     setState('login');
                   }}
-                  className="link-highlight"
+                  className={styles.linkHighlight}
                 >
                   Đăng nhập
                 </a>
@@ -190,10 +232,10 @@ export default function Auth() {
 
           {state === 'forgot' && (
             <>
-              <h2 className="auth-title">Quên mật khẩu?</h2>
-              <p className="auth-subtitle">Nhập SĐT để nhận mã OTP</p>
+              <h2 className={styles.authTitle}>Quên mật khẩu?</h2>
+              <p className={styles.authSubtitle}>Nhập SĐT để nhận mã OTP</p>
 
-              <div className="input-group">
+              <div className={styles.inputGroup}>
                 <i className="fa-solid fa-phone"></i>
                 <input
                   type="text"
@@ -204,18 +246,18 @@ export default function Auth() {
                 />
               </div>
 
-              <button className="btn btn-primary w-100 btn-auth" onClick={handleForgot}>
-                Gửi mã xác nhận
+              <button className={styles.btnAuth} disabled={loading} onClick={handleForgot}>
+                {loading ? 'Đang xử lý...' : 'Gửi mã xác nhận'}
               </button>
 
-              <div className="auth-footer">
+              <div className={styles.authFooter}>
                 <a
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
                     setState('login');
                   }}
-                  className="link-highlight"
+                  className={styles.linkHighlight}
                 >
                   <i className="fa-solid fa-arrow-left"></i> Quay lại đăng nhập
                 </a>
@@ -223,14 +265,14 @@ export default function Auth() {
             </>
           )}
 
-          <div className="divider">
+          <div className={styles.divider}>
             <span>Hoặc đăng nhập bằng</span>
           </div>
-          <div className="social-login">
-            <button className="btn-social google">
+          <div className={styles.socialLogin}>
+            <button className={`${styles.btnSocial} google`}>
               <i className="fa-brands fa-google"></i> Google
             </button>
-            <button className="btn-social facebook">
+            <button className={`${styles.btnSocial} facebook`}>
               <i className="fa-brands fa-facebook-f"></i> Facebook
             </button>
           </div>

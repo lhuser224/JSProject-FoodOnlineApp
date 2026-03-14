@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useStore';
+import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -7,27 +8,24 @@ export default function Navbar() {
   const cartCount = cart.length;
 
   return (
-    <nav className="navbar">
-      <div className="nav-logo" onClick={() => navigate('/')}>
+    <nav className={styles.navbar}>
+      <div className={styles.navLogo} onClick={() => navigate('/')}>
         Food App
       </div>
-      <div className="nav-links">
+      <div className={styles.navLinks}>
         <i
           className="fa-solid fa-user"
           onClick={() => navigate('/auth')}
-          style={{ cursor: 'pointer' }}
         ></i>
         <i
           className="fa-solid fa-clock-rotate-left"
           onClick={() => navigate('/history')}
-          style={{ cursor: 'pointer' }}
         ></i>
         <i
           className="fa-solid fa-cart-shopping"
           onClick={() => navigate('/checkout')}
-          style={{ cursor: 'pointer' }}
         >
-          <span id="cart-badge">{cartCount}</span>
+          <span className={styles.cartBadge}>{cartCount}</span>
         </i>
       </div>
     </nav>

@@ -5,6 +5,7 @@ import Auth from './pages/Auth';
 import Checkout from './pages/Checkout';
 import History from './pages/History';
 import SellerDashboard from './pages/SellerDashboard';
+import './styles/zindex.css';
 import './App.css';
 
 function App() {

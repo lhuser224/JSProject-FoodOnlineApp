@@ -1,0 +1,192 @@
+import axiosClient from '../api/axiosClient';
+
+/**
+ * Auth Service
+ * Handles all authentication-related API calls
+ * Database schema: users table with full_name, phone (max 15 chars), password, role ENUM
+ */
+
+/**
+ * User login
+ * @param {string} phone - Phone number (max 15 chars)
+ * @param {string} password - Password
+ * @returns {Promise<Object>} { user_id, full_name, phone, role, token }
+ */
+export const login = async (phone, password) => {
+  try {
+    if (!phone || !password) {
+      throw new Error('Phone and password are required');
+    }
+    if (phone.length > 15) {
+      throw new Error('Phone number must be max 15 characters');
+    }
+
+    const payload = {
+      phone: phone.trim(),
+      password
+    };
+
+    const response = await axiosClient.post('/auth/login', payload);
+
+    // Store token if provided
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response));
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Error during login:', error);
+    throw error;
+  }
+};
+
+/**
+ * User registration
+ * @param {string} fullName - User's full name
+ * @param {string} phone - Phone number (max 15 chars)
+ * @param {string} password - Password
+ * @returns {Promise<Object>} { user_id, full_name, phone, role, token }
+ */
+export const register = async (fullName, phone, password) => {
+  try {
+    if (!fullName || !phone || !password) {
+      throw new Error('Full name, phone, and password are required');
+    }
+    if (phone.length > 15) {
+      throw new Error('Phone number must be max 15 characters');
+    }
+
+    const payload = {
+      full_name: fullName.trim(),
+      phone: phone.trim(),
+      password,
+      role: 'customer' // Default role for new users
+    };
+
+    const response = await axiosClient.post('/auth/register', payload);
+
+    // Store token if provided
+    if (response.token) {
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response));
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Error during registration:', error);
+    throw error;
+  }
+};
+
+/**
+ * Request password reset
+ * @param {string} phone - Phone number registered with account
+ * @returns {Promise<Object>} { message, otp_sent: true }
+ */
+export const forgotPassword = async (phone) => {
+  try {
+    if (!phone) {
+      throw new Error('Phone number is required');
+    }
+    if (phone.length > 15) {
+      throw new Error('Phone number must be max 15 characters');
+    }
+
+    const payload = { phone: phone.trim() };
+    const response = await axiosClient.post('/auth/forgot-password', payload);
+    return response;
+  } catch (error) {
+    console.error('Error during forgot password:', error);
+    throw error;
+  }
+};
+
+/**
+ * Verify OTP code
+ * @param {string} phone - Phone number
+ * @param {string} otp - OTP code
+ * @returns {Promise<Object>} { token, message }
+ */
+export const verifyOTP = async (phone, otp) => {
+  try {
+    if (!phone || !otp) {
+      throw new Error('Phone and OTP are required');
+    }
+
+    const payload = {
+      phone: phone.trim(),
+      otp: otp.toString()
+    };
+
+    const response = await axiosClient.post('/auth/verify-otp', payload);
+    return response;
+  } catch (error) {
+    console.error('Error during OTP verification:', error);
+    throw error;
+  }
+};
+
+/**
+ * Reset password with OTP token
+ * @param {string} phone - Phone number
+ * @param {string} token - OTP verification token
+ * @param {string} newPassword - New password
+ * @returns {Promise<Object>} { message, success: true }
+ */
+export const resetPassword = async (phone, token, newPassword) => {
+  try {
+    if (!phone || !token || !newPassword) {
+      throw new Error('Phone, token, and new password are required');
+    }
+
+    const payload = {
+      phone: phone.trim(),
+      token,
+      password: newPassword
+    };
+
+    const response = await axiosClient.post('/auth/reset-password', payload);
+    return response;
+  } catch (error) {
+    console.error('Error during password reset:', error);
+    throw error;
+  }
+};
+
+/**
+ * Logout user
+ * Clears local storage and removes token
+ */
+export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+};
+
+/**
+ * Get current logged in user
+ * @returns {Object|null} Current user object or null
+ */
+export const getCurrentUser = () => {
+  const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : null;
+};
+
+/**
+ * Check if user is authenticated
+ * @returns {boolean}
+ */
+export const isAuthenticated = () => {
+  return !!localStorage.getItem('token');
+};
+
+export default {
+  login,
+  register,
+  forgotPassword,
+  verifyOTP,
+  resetPassword,
+  logout,
+  getCurrentUser,
+  isAuthenticated
+};

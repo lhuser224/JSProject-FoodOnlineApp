@@ -1,0 +1,30 @@
+/**
+ * Z-Index Hierarchy
+ * Establishes a consistent layering system for stacking context
+ *
+ * Layering order (low to high):
+ * - Dropdowns: 50
+ * - Sticky elements: 100
+ * - Fixed positioning: 200+
+ * - Modals & Overlays: 999+
+ */
+
+:root {
+  /* Dropdown layers */
+  --z-dropdown: 50;
+
+  /* Sticky navigation and sidebars */
+  --z-sticky: 100;
+
+  /* Fixed positioning (notifications, toasts) */
+  --z-fixed: 150;
+
+  /* Auth page full-screen overlay */
+  --z-auth-page: 200;
+
+  /* Modal overlays and popups (primary layer) */
+  --z-modal: 999;
+
+  /* Toast notifications and alerts (top layer) */
+  --z-toast: 1000;
+}

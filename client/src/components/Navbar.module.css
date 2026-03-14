@@ -1,0 +1,58 @@
+/* =========================================
+   NAVBAR COMPONENT STYLES
+   ========================================= */
+
+.navbar {
+  background: white;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky, 100);
+}
+
+.navLogo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ee4d2d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navLinks {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.navLinks i {
+  font-size: 1.2rem;
+  color: #555;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.navLinks i:hover {
+  color: #ee4d2d;
+}
+
+/* Badge số lượng giỏ hàng */
+.cartBadge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #ee4d2d;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
