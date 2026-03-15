@@ -209,7 +209,8 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={`container ${styles.mainContentArea}`}>
+      
+      <div className={styles.mainContentArea}>
         <aside className={styles.sidebarWireframe}>
           <h3 className={styles.filterTitle}>Filters</h3>
 

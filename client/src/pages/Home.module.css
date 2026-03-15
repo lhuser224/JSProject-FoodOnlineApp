@@ -1,11 +1,13 @@
 /* =========================================
-   HOME PAGE STYLES
+   HOME PAGE STYLES 
    ========================================= */
 
-/* HERO BANNER (SHOPEE STYLE) */
+/* HERO BANNER */
 .heroWrapper {
   position: relative;
-  height: 400px;
+  min-height: 400px; 
+  padding: 40px 20px;
+  box-sizing: border-box;
   background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
   display: flex;
   align-items: center;
@@ -19,7 +21,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));
 }
 
 .heroContainer {
@@ -47,7 +49,7 @@
 /* Search Box */
 .searchBoxLarge {
   background: white;
-  border-radius: 8px;
+  border-radius: 8px; 
   padding: 6px;
   display: flex;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -58,41 +60,45 @@
   flex: 1;
   border: none;
   padding: 15px 20px;
-  font-size: 1rem;
+  font-size: 1.05rem;
   outline: none;
   border-radius: 8px;
+  background-color: white !important; 
+  color: #333;
 }
 
 .searchBoxLarge .btnSearch {
-  width: 60px;
+  width: 65px;
   background: #ee4d2d;
   border: none;
-  border-radius: 6px;
+  border-radius: 6px; 
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
   transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .searchBoxLarge .btnSearch:hover {
   background: #d73211;
 }
 
-/* Tags nổi */
 .quickTags {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 15px; 
 }
 
 .tag {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 8px 18px; 
+  border-radius: 25px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   backdrop-filter: blur(4px);
   transition: 0.2s;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -103,13 +109,19 @@
   background: white;
   color: #ee4d2d;
   font-weight: bold;
+  border-color: white;
 }
 
 /* MAIN LAYOUT */
 .mainContentArea {
   display: flex;
   gap: 30px;
+  width: 100%; 
+  max-width: 1200px; 
+  margin: 0 auto;
+  padding: 0 15px 60px 15px;
   align-items: flex-start;
+  box-sizing: border-box;
 }
 
 /* Product Section */
@@ -118,7 +130,7 @@
 }
 
 .sectionHead {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   border-bottom: 2px solid #ee4d2d;
   padding-bottom: 10px;
   display: inline-block;
@@ -129,30 +141,32 @@
   font-size: 1.4rem;
   font-weight: bold;
   text-transform: uppercase;
+  margin: 0;
 }
 
 /* Grid V2 */
 .gridV2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); 
+  gap: 25px; /* Tăng khoảng cách lưới */
 }
 
-/* Card V2 (Shopee Style) */
 .cardV2 {
   background: white;
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  border: 1px solid transparent;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
 }
 
 .cardV2:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  border-color: #ee4d2d;
+  border-color: #ffd6cc;
 }
 
 .cardThumb {
@@ -160,6 +174,7 @@
   position: relative;
   background: #f9f9f9;
   overflow: hidden;
+  border-bottom: 1px solid #eee;
 }
 
 .imgPlaceholder {
@@ -180,7 +195,7 @@
   z-index: 2;
   background: #ee4d2d;
   color: white;
-  padding: 2px 8px;
+  padding: 4px 8px;
   font-size: 0.75rem;
   font-weight: bold;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -200,7 +215,7 @@
   bottom: 8px;
   right: 8px;
   background: rgba(255, 255, 255, 0.9);
-  padding: 2px 8px;
+  padding: 4px 8px;
   font-size: 0.75rem;
   border-radius: 4px;
   font-weight: bold;
@@ -213,7 +228,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   color: white;
   display: flex;
   align-items: center;
@@ -228,22 +243,26 @@
 }
 
 .cardDetails {
-  padding: 12px;
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .foodName {
-  font-size: 1rem;
-  margin-bottom: 4px;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #333;
+  font-weight: 700;
 }
 
 .foodAddress {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #888;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -252,9 +271,9 @@
 .cardMeta {
   display: flex;
   gap: 10px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #666;
-  margin-bottom: 12px;
+  margin-bottom: auto; 
 }
 
 .rating i {
@@ -265,19 +284,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px dashed #eee;
+  margin-top: 10px;
 }
 
 .priceTag {
   color: #ee4d2d;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
 }
 
 .btnPlus {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: #ee4d2d;
   color: white;
@@ -287,11 +307,12 @@
   justify-content: center;
   cursor: pointer;
   transition: 0.2s;
+  font-size: 1.1rem;
 }
 
 .btnPlus:hover {
   background: #c0391b;
-  transform: rotate(90deg);
+  transform: scale(1.1);
 }
 
 .textWarning {
@@ -304,16 +325,17 @@
   width: 260px;
   flex-shrink: 0;
   background: white;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 20px;
+  border: none;
+  border-radius: 8px;
+  padding: 25px;
   height: fit-content;
   position: sticky;
   top: 90px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .filterTitle {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 20px;
   color: #333;
@@ -324,9 +346,9 @@
 }
 
 .filterSection h4 {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #444;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-weight: 600;
 }
 
@@ -335,8 +357,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
-  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
   color: #555;
   cursor: pointer;
 }
@@ -345,6 +367,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
+  accent-color: #ee4d2d;
 }
 
 /* Price Range Inputs & Slider */
@@ -352,57 +375,64 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .priceBox {
   width: 45%;
-  padding: 5px;
-  border: 1px solid #333;
+  padding: 8px;
+  border: 1px solid #ddd;
   text-align: center;
-  border-radius: 2px;
+  border-radius: 4px;
+  outline: none;
+  background: white;
+  color: #333;
 }
 
 .dash {
   font-weight: bold;
-  color: #333;
+  color: #999;
 }
 
 .rangeSlider {
   width: 100%;
-  height: 4px;
+  height: 5px;
   background: #ddd;
-  border-radius: 2px;
+  border-radius: 4px;
   outline: none;
   cursor: pointer;
+  accent-color: #ee4d2d;
 }
 
 /* Sort Box styling */
 .sortBox {
-  border: 1px solid #ccc;
-  padding: 8px;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 5px;
-  border-radius: 2px;
-  background: #f9f9f9;
+  gap: 8px;
+  border-radius: 6px;
+  background: #fff;
 }
 
 .sortBox span {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #666;
+  white-space: nowrap; 
+  flex-shrink: 0;   
 }
 
 .sortBox select {
   border: none;
   background: transparent;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   outline: none;
   flex: 1;
   cursor: pointer;
+  color: #333;
+  width: 100%;
 }
-
 /* PRODUCT DETAIL MODAL */
 .modalOverlay {
   position: fixed;
@@ -422,12 +452,14 @@
 .modalContent {
   background: #fff;
   width: 500px;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
   animation: slideUp 0.3s ease;
   max-height: 90vh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalImageBox {
@@ -454,6 +486,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #333;
 }
 
 .modalCloseBtn:hover {
@@ -466,17 +499,16 @@
 
 .modalBody h2 {
   margin: 0 0 5px 0;
+  color: #222;
 }
 
 .modalBody > p {
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .optionsScroll {
-  max-height: 300px;
-  overflow-y: auto;
   padding-right: 5px;
 }
 
@@ -489,8 +521,9 @@
   justify-content: space-between;
   background: #f8f9fa;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-bottom: 10px;
+  align-items: center;
 }
 
 .optGroupHeader strong {
@@ -510,17 +543,14 @@
   justify-content: space-between;
   margin: 12px 0;
   cursor: pointer;
-}
-
-.optItem span {
-  color: #888;
+  color: #555;
 }
 
 .quantityControl {
   display: flex;
   align-items: center;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -530,20 +560,23 @@
   border: none;
   background: #fff;
   cursor: pointer;
+  font-size: 1rem;
+  color: #333;
 }
 
 .quantityDisplay {
   padding: 0 15px;
   font-weight: bold;
+  color: #333;
 }
 
 .modalFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
+  padding-top: 15px;
   border-top: 1px solid #eee;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .addToCartBtn {
@@ -552,10 +585,11 @@
   color: #fff;
   font-weight: bold;
   cursor: pointer;
-  padding: 8px 15px;
-  border-radius: 4px;
+  padding: 12px 15px;
+  border-radius: 6px;
   flex: 1;
-  margin-left: 10px;
+  margin-left: 15px;
+  transition: 0.2s;
 }
 
 .addToCartBtn:hover {
@@ -566,7 +600,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
