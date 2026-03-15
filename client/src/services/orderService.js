@@ -1,23 +1,5 @@
 import axiosClient from '../api/axiosClient';
 
-/**
- * Order Service
- * Handles all order-related API calls
- * Database schema: orders with user_id, shop_id, total_price (decimal), status
- * Cart items/order items have selected_options as JSON objects
- */
-
-/**
- * Create a new order
- * @param {Object} orderData - Order data
- *   user_id: number,
- *   shop_id: number,
- *   total_price: decimal,
- *   items: Array of { food_id, quantity, selected_options: JSON },
- *   user_details: { full_name, phone, address_detail },
- *   status: 'Processing' (default)
- * @returns {Promise<Object>} Created order with order_id
- */
 export const createOrder = async (orderData) => {
   try {
     if (!orderData.user_id || !orderData.shop_id || !orderData.items || orderData.items.length === 0) {

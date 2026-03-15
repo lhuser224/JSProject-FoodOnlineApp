@@ -1,14 +1,30 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart, useOrders } from '../hooks/useStore';
+import { AppContext } from '../context/AppContext';
 import Navbar from '../components/Navbar';
 import { createOrder } from '../services/orderService';
 import styles from './Checkout.module.css';
 
 export default function Checkout() {
-  const { cart, total, removeFromCart, clearCart } = useCart();
-  const { addOrder } = useOrders();
+  const { state, dispatch } = useContext(AppContext);
+  const { cart } = state;
   const navigate = useNavigate();
+
+  const total = cart.reduce((sum, item) => {
+    return sum + (item.totalPrice || item.price);
+  }, 0);
+
+  const removeFromCart = (index) => {
+    dispatch({ type: 'REMOVE_FROM_CART', payload: index });
+  };
+
+  const clearCart = () => {
+    dispatch({ type: 'CLEAR_CART' });
+  };
+
+  const addOrder = (order) => {
+    dispatch({ type: 'ADD_ORDER', payload: order });
+  };
 
   const [formData, setFormData] = useState({
     name: '',

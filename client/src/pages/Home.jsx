@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { useCart } from '../hooks/useStore';
-import { useAppStore } from '../hooks/useStore';
+import { useState, useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 import Navbar from '../components/Navbar';
 import styles from './Home.module.css';
 
@@ -166,8 +165,12 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const { products } = useAppProducts();
-  const { addToCart } = useCart();
+  const { state, dispatch } = useContext(AppContext);
+  const { products } = state;
+
+  const addToCart = (product) => {
+    dispatch({ type: 'ADD_TO_CART', payload: product });
+  };
 
   const handleQuickAdd = (product) => {
     addToCart(product);

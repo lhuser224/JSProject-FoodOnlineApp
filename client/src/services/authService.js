@@ -1,17 +1,5 @@
 import axiosClient from '../api/axiosClient';
 
-/**
- * Auth Service
- * Handles all authentication-related API calls
- * Database schema: users table with full_name, phone (max 15 chars), password, role ENUM
- */
-
-/**
- * User login
- * @param {string} phone - Phone number (max 15 chars)
- * @param {string} password - Password
- * @returns {Promise<Object>} { user_id, full_name, phone, role, token }
- */
 export const login = async (phone, password) => {
   try {
     if (!phone || !password) {
@@ -41,13 +29,6 @@ export const login = async (phone, password) => {
   }
 };
 
-/**
- * User registration
- * @param {string} fullName - User's full name
- * @param {string} phone - Phone number (max 15 chars)
- * @param {string} password - Password
- * @returns {Promise<Object>} { user_id, full_name, phone, role, token }
- */
 export const register = async (fullName, phone, password) => {
   try {
     if (!fullName || !phone || !password) {

@@ -1,21 +1,13 @@
 import axios from 'axios';
 
-/**
- * Axios client instance with global configuration
- * baseURL: /FoodO
- * Includes request/response interceptors for authentication and error handling
- */
 const axiosClient = axios.create({
-  baseURL: '/FoodO',
+  baseURL: '/FoodO/api',
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-/**
- * Request Interceptor
- * - Add Authorization header if token exists in localStorage
- */
+// Add JWT token to all requests
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -24,33 +16,22 @@ axiosClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-/**
- * Response Interceptor
- * - Extract response.data automatically
- * - Handle global errors (401, 403, 500, etc.)
- */
+// Extract response data and handle errors
 axiosClient.interceptors.response.use(
-  (response) => {
-    // Return only the data portion
-    return response.data;
-  },
+  (response) => response.data,
   (error) => {
     const status = error.response?.status;
-
-    // Handle specific error cases
+    
     if (status === 401) {
-      // Unauthorized - clear token and redirect to login
       localStorage.removeItem('token');
       window.location.href = '/auth';
     } else if (status === 403) {
-      console.error('Forbidden: You do not have permission to access this resource');
+      console.error('Forbidden');
     } else if (status === 500) {
-      console.error('Server Error: Please try again later');
+      console.error('Server error');
     }
 
     return Promise.reject(error.response?.data || error);

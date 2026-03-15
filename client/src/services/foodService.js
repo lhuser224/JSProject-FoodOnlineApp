@@ -1,16 +1,5 @@
 import axiosClient from '../api/axiosClient';
 
-/**
- * Food Service
- * Handles all food-related API calls
- * Database schema: foods table with shop_id, category_id, name, price, status, image_url
- */
-
-/**
- * Get all foods or foods by shop
- * @param {number} shopId - Optional shop ID to filter by
- * @returns {Promise<Array>} Array of food items
- */
 export const getFoods = async (shopId) => {
   try {
     const url = shopId ? `/seller/${shopId}/foods` : '/foods';

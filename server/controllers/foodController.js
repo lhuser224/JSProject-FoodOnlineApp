@@ -3,12 +3,11 @@ const db = require('../config/db');
 exports.getShopFoods = async (req, res) => {
     const { shopId } = req.params;
     try {
-        // Sử dụng await vì đã có .promise() trong file config
         const [rows] = await db.query("SELECT * FROM foods WHERE shop_id = ?", [shopId]);
         res.json(rows);
     } catch (err) {
-        console.error("Lỗi Database:", err);
-        res.status(500).json({ message: "Không thể lấy dữ liệu từ MySQL" });
+        console.error("Database error:", err);
+        res.status(500).json({ message: "Could not fetch foods from database" });
     }
 };
 
@@ -20,9 +19,9 @@ exports.addFood = async (req, res) => {
         const sql = "INSERT INTO foods (name, price, image_url, shop_id, category_id) VALUES (?, ?, ?, ?, ?)";
         await db.query(sql, [name, price, image_url, shopId, category_id || 1]);
         
-        res.status(200).json({ message: "Thêm món thành công!" });
+        res.status(200).json({ message: "Food added successfully!" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Lỗi khi lưu vào Database!" });
+        res.status(500).json({ message: "Error saving food to database!" });
     }
 };

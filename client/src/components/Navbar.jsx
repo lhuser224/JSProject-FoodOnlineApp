@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../hooks/useStore';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { cart } = useCart();
+  const { state } = useContext(AppContext);
+  const { cart } = state;
   const cartCount = cart.length;
 
   return (

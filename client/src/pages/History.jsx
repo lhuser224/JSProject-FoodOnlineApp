@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useOrders } from '../hooks/useStore';
+import { AppContext } from '../context/AppContext';
 import Navbar from '../components/Navbar';
 import styles from './History.module.css';
 
@@ -58,8 +58,13 @@ function CancelModal({ isOpen, onClose, onConfirm, orderId }) {
 }
 
 export default function History() {
-  const { orders, cancelOrder } = useOrders();
+  const { state, dispatch } = useContext(AppContext);
+  const { orders } = state;
   const navigate = useNavigate();
+
+  const cancelOrder = (orderId, reason) => {
+    dispatch({ type: 'CANCEL_ORDER', payload: { orderId, reason } });
+  };
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [orderRefreshTime, setOrderRefreshTime] = useState(0);
