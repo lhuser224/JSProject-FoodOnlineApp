@@ -22,11 +22,6 @@ export const getFoodById = async (foodId) => {
   }
 };
 
-/**
- * Search foods by query
- * @param {string} query - Search query
- * @returns {Promise<Array>} Array of matching food items
- */
 export const searchFoods = async (query) => {
   try {
     const data = await axiosClient.get('/foods/search', { params: { q: query } });
@@ -37,12 +32,6 @@ export const searchFoods = async (query) => {
   }
 };
 
-/**
- * Add a new food item to a shop
- * @param {number} shopId - Shop ID
- * @param {Object} foodData - Food data { name, price (decimal), image_url, category_id }
- * @returns {Promise<Object>} Created food item
- */
 export const addFood = async (shopId, foodData) => {
   try {
     const payload = {
@@ -109,12 +98,6 @@ export const getFoodsByCategory = async (categoryId) => {
   }
 };
 
-/**
- * Delete a food item
- * @param {number} shopId - Shop ID
- * @param {number} foodId - Food ID
- * @returns {Promise<Object>} Success response
- */
 export const deleteFood = async (shopId, foodId) => {
   try {
     const data = await axiosClient.delete(

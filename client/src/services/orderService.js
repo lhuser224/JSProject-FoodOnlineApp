@@ -102,7 +102,6 @@ export const updateOrderStatus = async (orderId, status, dispatchContext) => {
       payload
     );
 
-    // Optionally dispatch to Context if function provided
     if (dispatchContext) {
       dispatchContext({
         type: 'UPDATE_ORDER_STATUS',

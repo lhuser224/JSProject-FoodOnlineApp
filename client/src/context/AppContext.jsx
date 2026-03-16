@@ -69,7 +69,6 @@ function appReducer(state, action) {
   }
 }
 
-// Provider component
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 

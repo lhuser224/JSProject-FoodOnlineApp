@@ -60,11 +60,6 @@ export const register = async (fullName, phone, password) => {
   }
 };
 
-/**
- * Request password reset
- * @param {string} phone - Phone number registered with account
- * @returns {Promise<Object>} { message, otp_sent: true }
- */
 export const forgotPassword = async (phone) => {
   try {
     if (!phone) {
@@ -83,12 +78,6 @@ export const forgotPassword = async (phone) => {
   }
 };
 
-/**
- * Verify OTP code
- * @param {string} phone - Phone number
- * @param {string} otp - OTP code
- * @returns {Promise<Object>} { token, message }
- */
 export const verifyOTP = async (phone, otp) => {
   try {
     if (!phone || !otp) {
@@ -135,28 +124,17 @@ export const resetPassword = async (phone, token, newPassword) => {
   }
 };
 
-/**
- * Logout user
- * Clears local storage and removes token
- */
 export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
 
-/**
- * Get current logged in user
- * @returns {Object|null} Current user object or null
- */
 export const getCurrentUser = () => {
   const userStr = localStorage.getItem('user');
   return userStr ? JSON.parse(userStr) : null;
 };
 
-/**
- * Check if user is authenticated
- * @returns {boolean}
- */
+
 export const isAuthenticated = () => {
   return !!localStorage.getItem('token');
 };
