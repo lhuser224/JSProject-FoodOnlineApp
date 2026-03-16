@@ -16,7 +16,8 @@ export default function Checkout() {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    phone: ''
+    phone: '',
+    note: ''
   });
 
   useEffect(() => {
@@ -29,21 +30,13 @@ export default function Checkout() {
     return sum + (item.totalPrice || item.price * item.quantity);
   }, 0);
 
-  const removeFromCart = (index) => {
-    dispatch({ type: 'REMOVE_FROM_CART', payload: index });
-  };
-
-  const clearCart = () => {
-    dispatch({ type: 'CLEAR_CART' });
-  };
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleRemoveItem = (index) => {
-    removeFromCart(index);
+    dispatch({ type: 'REMOVE_FROM_CART', payload: index });
   };
 
   const handleCheckout = async () => {
@@ -59,18 +52,15 @@ export default function Checkout() {
     }
 
     if (cart.length === 0) {
-      alert('Giỏ hàng trống! Vui lòng chọn món.');
+      alert('Giỏ hàng trống!');
       return;
     }
 
     try {
       setLoading(true);
-      const userStr = localStorage.getItem('user');
-      const userData = userStr ? JSON.parse(userStr) : {};
-
       const orderItems = cart.map(item => ({
-        food_id: item.id || 1,
-        quantity: item.quantity || 1,
+        food_id: item.id,
+        quantity: item.quantity,
         selected_options: item.selected_options || {
           size: item.size || 'M',
           extras: item.extras || []
@@ -79,30 +69,26 @@ export default function Checkout() {
 
       const orderPayload = {
         shop_id: 1,
-        total_price: total,
-        items: orderItems
+        total_price: total + 2, // Gồm cả phí vận chuyển
+        items: orderItems,
+        customer_info: formData
       };
 
       const response = await createOrder(orderPayload);
 
       setOrderId(response.data?.id || '#ORD-' + Math.floor(100000 + Math.random() * 900000));
       setShowSuccess(true);
-      clearCart();
+      dispatch({ type: 'CLEAR_CART' });
       
       setTimeout(() => {
         navigate('/history');
-      }, 2000);
+      }, 3000);
     } catch (error) {
       console.error('Checkout error:', error);
       alert('Lỗi: ' + (error.message || 'Không thể tạo đơn hàng!'));
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleReturnMenu = () => {
-    setShowSuccess(false);
-    navigate('/');
   };
 
   return (
@@ -112,31 +98,39 @@ export default function Checkout() {
       <div className={`container ${styles.checkoutLayout}`}>
         <div className={styles.checkoutForm}>
           <h2>Thông tin giao hàng</h2>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Họ tên"
-            id="name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Địa chỉ"
-            id="address"
-            value={formData.address}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Số điện thoại"
-            id="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-          />
-          <textarea className="form-control" placeholder="Ghi chú..."></textarea>
+          <div className={styles.formGroup}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Họ tên"
+              id="name"
+              value={formData.name}
+              onChange={handleInputChange}
+            />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Địa chỉ"
+              id="address"
+              value={formData.address}
+              onChange={handleInputChange}
+            />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Số điện thoại"
+              id="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+            />
+            <textarea 
+              id="note"
+              className="form-control" 
+              placeholder="Ghi chú thêm (vị trí, yêu cầu đặc biệt...)"
+              value={formData.note}
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
         </div>
 
         <div className={styles.orderSummary}>
@@ -144,21 +138,19 @@ export default function Checkout() {
 
           <div className={styles.cartItemsList}>
             {cart.length === 0 ? (
-              <p style={{ color: '#777', fontStyle: 'italic' }}>Giỏ hàng đang trống</p>
+              <p className={styles.emptyMsg}>Giỏ hàng đang trống</p>
             ) : (
               cart.map((item, index) => (
                 <div key={index} className={styles.cartItem}>
                   <div className={styles.cartItemInfo}>
                     <strong>{item.name}</strong>
-                    {item.quantity && <div className={styles.quantity}>x{item.quantity}</div>}
-                    <div className={styles.price}>
-                      ${(item.totalPrice || item.price * item.quantity).toFixed(2)}
+                    <div className={styles.meta}>Size {item.size || 'M'} {item.extras?.length > 0 && `+ ${item.extras.join(', ')}`}</div>
+                    <div className={styles.priceRow}>
+                      <span>x{item.quantity}</span>
+                      <span>${(item.totalPrice || item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   </div>
-                  <button
-                    className={styles.btnRemove}
-                    onClick={() => handleRemoveItem(index)}
-                  >
+                  <button className={styles.btnRemove} onClick={() => handleRemoveItem(index)}>
                     <i className="fa-solid fa-trash"></i>
                   </button>
                 </div>
@@ -180,7 +172,7 @@ export default function Checkout() {
           </div>
 
           <div className={styles.totalRow}>
-            <span>Tổng tiền:</span>
+            <span>Tổng cộng:</span>
             <span className={styles.totalPrice}>${(total + 2).toFixed(2)}</span>
           </div>
 
@@ -189,17 +181,8 @@ export default function Checkout() {
             onClick={handleCheckout}
             disabled={loading || cart.length === 0}
           >
-            {loading ? 'Đang xử lý...' : 'Đặt hàng ngay'}
+            {loading ? 'Đang xử lý...' : 'Xác nhận đặt hàng'}
           </button>
-
-          {cart.length === 0 && (
-            <button
-              className="btn btn-secondary w-100 mt-20"
-              onClick={() => navigate('/')}
-            >
-              Quay lại chọn món
-            </button>
-          )}
         </div>
       </div>
 
@@ -211,21 +194,9 @@ export default function Checkout() {
             </div>
             <h2>Đặt hàng thành công!</h2>
             <p>Mã đơn hàng: <strong>{orderId}</strong></p>
-            <p>Cảm ơn bạn đã đặt hàng!</p>
-            <button className="btn btn-primary mt-20" onClick={handleReturnMenu}>
-              Về trang chủ
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-            <p className={styles.orderIdText}>
-              Order ID: <strong>{orderId}</strong>
-            </p>
-            <button className="btn btn-primary" onClick={handleReturnMenu}>
-              Return to Menu
+            <p>Đang chuyển hướng đến lịch sử đơn hàng...</p>
+            <button className="btn btn-primary mt-20" onClick={() => navigate('/')}>
+              Về trang chủ ngay
             </button>
           </div>
         </div>
