@@ -139,7 +139,7 @@ export default function Auth() {
 
               <div className={styles.authActions}>
                 <label>
-                  <input type="checkbox" /> Ghi nhớ tôi
+                  <input type="checkbox" /> Nhớ mật khẩu
                 </label>
                 <a
                   href="#"

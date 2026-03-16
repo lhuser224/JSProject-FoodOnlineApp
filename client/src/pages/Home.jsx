@@ -23,6 +23,18 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
     );
   };
 
+  const handleAddToCart = () => {
+    onAddToCart({
+      ...product,
+      size: selectedSize,
+      extras: selectedToppings,
+      quantity,
+      totalPrice,
+      selected_options: { size: selectedSize, extras: selectedToppings }
+    });
+    onClose();
+  };
+
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -35,18 +47,11 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
           <h2>{product.name}</h2>
           <div className={styles.optionsScroll}>
             <div className={styles.optGroup}>
-              <div className={styles.optGroupHeader}>
-                <strong>Chọn Size</strong>
-              </div>
+              <div className={styles.optGroupHeader}><strong>Chọn Size</strong></div>
               {['M', 'L'].map(size => (
                 <label key={size} className={styles.optItem}>
                   <span>
-                    <input 
-                      type="radio" 
-                      name="size" 
-                      checked={selectedSize === size} 
-                      onChange={() => setSelectedSize(size)} 
-                    /> Size {size}
+                    <input type="radio" name="size" checked={selectedSize === size} onChange={() => setSelectedSize(size)} /> Size {size}
                   </span>
                   <span>+ ${size === 'L' ? '2.00' : '0.00'}</span>
                 </label>
@@ -57,13 +62,13 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
               <div className={styles.optGroupHeader}><strong>Topping thêm</strong></div>
               <label className={styles.optItem}>
                 <span>
-                  <input type="checkbox" onChange={() => handleToppingChange('Egg')} /> Thêm trứng
+                  <input type="checkbox" checked={selectedToppings.includes('Egg')} onChange={() => handleToppingChange('Egg')} /> Thêm trứng
                 </span>
                 <span>+ $1.00</span>
               </label>
               <label className={styles.optItem}>
                 <span>
-                  <input type="checkbox" onChange={() => handleToppingChange('Cheese')} /> Thêm phô mai
+                  <input type="checkbox" checked={selectedToppings.includes('Cheese')} onChange={() => handleToppingChange('Cheese')} /> Thêm phô mai
                 </span>
                 <span>+ $1.50</span>
               </label>
@@ -76,10 +81,7 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
               <span className={styles.quantityDisplay}>{quantity}</span>
               <button className={styles.quantityBtn} onClick={() => setQuantity(quantity + 1)}>+</button>
             </div>
-            <button 
-              className={styles.addToCartBtn} 
-              onClick={() => onAddToCart({ ...product, size: selectedSize, extras: selectedToppings, quantity, totalPrice, selected_options: { size: selectedSize, extras: selectedToppings } })}
-            >
+            <button onClick={handleAddToCart} className={styles.addToCartBtn}>
               Thêm vào giỏ - ${totalPrice.toFixed(2)}
             </button>
           </div>
@@ -103,7 +105,7 @@ export default function Home() {
   const loadFoods = async () => {
     try {
       setLoading(true);
-      const res = await getFoods(1);
+      const res = await getFoods();
       const data = res?.data || res || [];
       setFoods(data.length > 0 ? data : (state.products || []));
     } catch {
@@ -166,10 +168,10 @@ export default function Home() {
                   <div className={styles.cardDetails}>
                     <h4 className={styles.foodName}>{product.name}</h4>
                     <div className={styles.cardBottom}>
-                      <div className={styles.priceTag}>${product.price.toFixed(2)}</div>
+                      <div className={styles.priceTag}>${product.price?.toFixed(2)}</div>
                       <button className={styles.btnPlus} onClick={(e) => { 
                         e.stopPropagation(); 
-                        addToCart({ ...product, quantity: 1, totalPrice: product.price, selected_options: {} }); 
+                        addToCart({ ...product, quantity: 1, totalPrice: product.price }); 
                       }}>
                         <i className="fa-solid fa-plus"></i>
                       </button>
@@ -186,7 +188,7 @@ export default function Home() {
         <ProductDetailModal
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
-          onAddToCart={(data) => { addToCart(data); setSelectedProduct(null); }}
+          onAddToCart={addToCart}
         />
       )}
     </>

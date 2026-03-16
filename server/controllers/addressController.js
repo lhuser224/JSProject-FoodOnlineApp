@@ -1,8 +1,6 @@
 const db = require('../config/db');
 
-/**
- * Get all addresses for a user
- */
+
 exports.getUserAddresses = async (req, res) => {
     try {
         const { userId } = req.params;

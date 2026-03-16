@@ -3,31 +3,24 @@ import axiosClient from '../api/axiosClient';
 export const getFoods = async (shopId) => {
   try {
     const url = shopId ? `/seller/${shopId}/foods` : '/foods';
-    const data = await axiosClient.get(url);
-    return data;
+    return await axiosClient.get(url);
   } catch (error) {
-    console.error('Error fetching foods:', error);
     throw error;
   }
 };
 
-
 export const getFoodById = async (foodId) => {
   try {
-    const data = await axiosClient.get(`/foods/${foodId}`);
-    return data;
+    return await axiosClient.get(`/foods/${foodId}`);
   } catch (error) {
-    console.error('Error fetching food:', error);
     throw error;
   }
 };
 
 export const searchFoods = async (query) => {
   try {
-    const data = await axiosClient.get('/foods/search', { params: { q: query } });
-    return data;
+    return await axiosClient.get('/foods/search', { params: { q: query } });
   } catch (error) {
-    console.error('Error searching foods:', error);
     throw error;
   }
 };
@@ -36,76 +29,52 @@ export const addFood = async (shopId, foodData) => {
   try {
     const payload = {
       name: foodData.name,
-      price: parseFloat(foodData.price), // Ensure decimal
+      price: parseFloat(foodData.price),
       image_url: foodData.image_url || '',
       category_id: foodData.category_id || 1
     };
-    const data = await axiosClient.post(`/seller/${shopId}/add-food`, payload);
-    return data;
+    return await axiosClient.post(`/seller/${shopId}/add-food`, payload);
   } catch (error) {
-    console.error('Error adding food:', error);
     throw error;
   }
 };
 
-/**
- * Update an existing food item
- * @param {number} shopId - Shop ID
- * @param {number} foodId - Food ID
- * @param {Object} foodData - Updated food data
- * @returns {Promise<Object>} Updated food item
- */
 export const updateFood = async (shopId, foodId, foodData) => {
   try {
-    const data = await axiosClient.patch(
-      `/seller/${shopId}/foods/${foodId}`,
-      foodData
-    );
-    return data;
+    return await axiosClient.patch(`/seller/${shopId}/foods/${foodId}`, foodData);
   } catch (error) {
-    console.error('Error updating food:', error);
     throw error;
   }
 };
 
 export const toggleFoodStatus = async (shopId, foodId) => {
   try {
-    const data = await axiosClient.patch(`/foods/${foodId}/status`);
-    return data;
+    return await axiosClient.patch(`/foods/${foodId}/status`);
   } catch (error) {
-    console.error('Error toggling food status:', error);
     throw error;
   }
 };
 
 export const getFoodsByShop = async (shopId) => {
   try {
-    const data = await axiosClient.get(`/foods/shop/${shopId}`);
-    return data;
+    return await axiosClient.get(`/foods/shop/${shopId}`);
   } catch (error) {
-    console.error('Error fetching shop foods:', error);
     throw error;
   }
 };
 
 export const getFoodsByCategory = async (categoryId) => {
   try {
-    const data = await axiosClient.get(`/foods/category/${categoryId}`);
-    return data;
+    return await axiosClient.get(`/foods/category/${categoryId}`);
   } catch (error) {
-    console.error('Error fetching category foods:', error);
     throw error;
   }
 };
 
 export const deleteFood = async (shopId, foodId) => {
   try {
-    const data = await axiosClient.delete(
-      `/seller/${shopId}/foods/${foodId}`
-    );
-    return data;
+    return await axiosClient.delete(`/seller/${shopId}/foods/${foodId}`);
   } catch (error) {
-    console.error('Error deleting food:', error);
     throw error;
   }
 };
@@ -117,5 +86,7 @@ export default {
   addFood,
   updateFood,
   toggleFoodStatus,
+  getFoodsByShop,
+  getFoodsByCategory,
   deleteFood
 };

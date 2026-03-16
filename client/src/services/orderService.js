@@ -126,12 +126,6 @@ export const getOrderStats = async (userId) => {
   }
 };
 
-/**
- * Calculate order subtotal from items
- * Helper function to calculate based on cart items with options
- * @param {Array} items - Array of items with { price, quantity, selected_options }
- * @returns {number} Subtotal
- */
 export const calculateSubtotal = (items) => {
   return items.reduce((sum, item) => {
     let itemPrice = item.price || 0;

@@ -14,19 +14,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
-app.use('/api/foods', foodRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/shops', shopRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/cart', cartRoutes);
+const foodORouter = express.Router();
 
-app.get('/api/health', (req, res) => {
+foodORouter.use('/auth', authRoutes);
+foodORouter.use('/foods', foodRoutes);
+foodORouter.use('/orders', orderRoutes);
+foodORouter.use('/shops', shopRoutes);
+foodORouter.use('/categories', categoryRoutes);
+foodORouter.use('/cart', cartRoutes);
+
+foodORouter.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'Server is running',
+    message: 'FoodO Server is running',
     data: null
   });
 });
+
+app.use('/api/FoodO', foodORouter);
 
 module.exports = app;
