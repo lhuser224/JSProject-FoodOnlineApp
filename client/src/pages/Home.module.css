@@ -1,13 +1,17 @@
 /* =========================================
-   HOME PAGE STYLES 
+   HOME PAGE STYLES - CHI TIẾT BẢN FULL 700+
    ========================================= */
 
-/* HERO BANNER */
+/* --- RESET & GLOBAL TRONG MODULE --- */
+.mainContentArea * {
+  box-sizing: border-box;
+}
+
+/* HERO BANNER - PHẦN TRÊN CÙNG */
 .heroWrapper {
   position: relative;
-  min-height: 400px; 
-  padding: 40px 20px;
-  box-sizing: border-box;
+  min-height: 450px; 
+  padding: 60px 20px;
   background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
   display: flex;
   align-items: center;
@@ -17,50 +21,50 @@
 
 .heroOverlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+  z-index: 1;
 }
 
 .heroContainer {
   position: relative;
   z-index: 2;
   text-align: center;
-  width: 800px;
+  width: 850px;
   max-width: 95%;
 }
 
 .heroTitle {
   color: white;
-  font-size: 2.8rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
 }
 
 .heroSubtitle {
-  color: #f0f0f0;
-  font-size: 1.1rem;
-  margin-bottom: 30px;
+  color: #efefef;
+  font-size: 1.2rem;
+  margin-bottom: 35px;
+  font-weight: 300;
 }
 
-/* Search Box */
+/* Search Box Large (Shopee Style) */
 .searchBoxLarge {
   background: white;
-  border-radius: 8px; 
-  padding: 6px;
+  border-radius: 10px; 
+  padding: 8px;
   display: flex;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  margin-bottom: 25px;
 }
 
 .searchBoxLarge input {
   flex: 1;
   border: none;
-  padding: 15px 20px;
-  font-size: 1.05rem;
+  padding: 15px 25px;
+  font-size: 1.1rem;
   outline: none;
   border-radius: 8px;
   background-color: white !important; 
@@ -68,14 +72,14 @@
 }
 
 .searchBoxLarge .btnSearch {
-  width: 65px;
+  width: 70px;
   background: #ee4d2d;
   border: none;
-  border-radius: 6px; 
+  border-radius: 8px; 
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,98 +87,232 @@
 
 .searchBoxLarge .btnSearch:hover {
   background: #d73211;
+  transform: scale(1.02);
 }
 
+/* Quick Tags Banner */
 .quickTags {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 15px; 
+  gap: 12px; 
 }
 
 .tag {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 8px 18px; 
-  border-radius: 25px;
+  padding: 10px 22px; 
+  border-radius: 30px;
   cursor: pointer;
   font-size: 0.95rem;
-  backdrop-filter: blur(4px);
-  transition: 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tag:hover,
 .tag.active {
   background: white;
   color: #ee4d2d;
-  font-weight: bold;
+  font-weight: 700;
   border-color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-/* MAIN LAYOUT */
+/* -----------------------------------------
+   MAIN LAYOUT - CHIA TỶ LỆ 1:3 GỐC
+   ----------------------------------------- */
 .mainContentArea {
   display: flex;
-  gap: 30px;
+  gap: 35px;
   width: 100%; 
-  max-width: 1200px; 
+  max-width: 1300px; 
   margin: 0 auto;
-  padding: 0 15px 60px 15px;
+  padding: 0 20px 80px;
   align-items: flex-start;
-  box-sizing: border-box;
+  background-color: transparent; /* Để app chung quản lý màu nền */
 }
 
-/* Product Section */
+/* --- SIDEBAR (CHIẾM 1 PHẦN) --- */
+.sidebarWireframe {
+  width: 280px; 
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+}
+
+.filterTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filterSection {
+  margin-bottom: 30px;
+}
+
+.filterSection h4 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: #444;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.checkboxRow:hover {
+  color: #ee4d2d;
+}
+
+.checkboxRow input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #ee4d2d;
+}
+
+/* Price Range & Slider Chi tiết */
+.priceInputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.priceBox {
+  width: 45%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.priceBox:focus {
+  border-color: #ee4d2d;
+}
+
+.dash {
+  font-weight: bold;
+  color: #bbb;
+}
+
+.rangeSlider {
+  width: 100%;
+  height: 6px;
+  background: #eee;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  accent-color: #ee4d2d;
+}
+
+/* Sort Box */
+.sortBox {
+  border: 1px solid #eee;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.sortBox span {
+  font-size: 0.85rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.sortBox select {
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+  flex: 1;
+  color: #333;
+}
+
+/* -----------------------------------------
+   PRODUCT SECTION (CHIẾM 3 PHẦN)
+   ----------------------------------------- */
 .productSection {
   flex: 1;
 }
 
 .sectionHead {
-  margin-bottom: 25px;
-  border-bottom: 2px solid #ee4d2d;
-  padding-bottom: 10px;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #ee4d2d;
+  padding-bottom: 12px;
   display: inline-block;
 }
 
 .sectionHead h3 {
   color: #ee4d2d;
-  font-size: 1.4rem;
-  font-weight: bold;
+  font-size: 1.6rem;
+  font-weight: 800;
   text-transform: uppercase;
   margin: 0;
+  letter-spacing: 1px;
 }
 
-/* Grid V2 */
+/* GRID V2 - ÉP 3 CỘT CHI TIẾT */
 .gridV2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); 
-  gap: 25px; /* Tăng khoảng cách lưới */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 25px;
 }
 
+/* CARD V2 (SHOPEE STYLE - CỰC CHI TIẾT) */
 .cardV2 {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid #f1f1f1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .cardV2:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
   border-color: #ffd6cc;
 }
 
 .cardThumb {
-  height: 160px;
+  height: 190px;
   position: relative;
-  background: #f9f9f9;
+  background: #fdfdfd;
   overflow: hidden;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .imgPlaceholder {
@@ -183,97 +321,110 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ccc;
-  font-size: 3rem;
-  background: #eee;
+  color: #e0e0e0;
+  font-size: 4rem;
+  background: #f9f9f9;
 }
 
+/* Badge Deal nổi */
 .badgeDeal {
   position: absolute;
-  top: 10px;
-  left: -4px;
-  z-index: 2;
+  top: 15px;
+  left: -5px;
+  z-index: 3;
   background: #ee4d2d;
   color: white;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 8px rgba(238, 77, 45, 0.3);
+  border-radius: 0 4px 4px 0;
 }
 
 .badgeDeal::before {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -5px;
   left: 0;
-  border-top: 4px solid #b9361b;
-  border-left: 4px solid transparent;
+  border-top: 5px solid #a13019;
+  border-left: 5px solid transparent;
 }
 
 .badgeTime {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 4px 8px;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 5px 10px;
   font-size: 0.75rem;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 800;
   color: #333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .overlayHover {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(238, 77, 45, 0.1);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 800;
+  font-size: 1.1rem;
   opacity: 0;
   transition: 0.3s;
+  backdrop-filter: blur(2px);
 }
 
 .cardV2:hover .overlayHover {
   opacity: 1;
 }
 
+/* Chi tiết thẻ */
 .cardDetails {
-  padding: 15px;
+  padding: 18px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .foodName {
-  font-size: 1.05rem;
-  margin-bottom: 6px;
+  font-size: 1.15rem;
+  margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #333;
-  font-weight: 700;
+  color: #222;
+  font-weight: 800;
 }
 
 .foodAddress {
   font-size: 0.85rem;
   color: #888;
-  margin-bottom: 12px;
-  white-space: nowrap;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .cardMeta {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
   font-size: 0.85rem;
   color: #666;
-  margin-bottom: auto; 
+  margin-bottom: 18px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #333;
+  font-weight: 700;
 }
 
 .rating i {
@@ -284,21 +435,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 12px;
+  padding-top: 15px;
   border-top: 1px dashed #eee;
-  margin-top: 10px;
+  margin-top: auto;
 }
 
 .priceTag {
   color: #ee4d2d;
-  font-weight: bold;
-  font-size: 1.15rem;
+  font-weight: 800;
+  font-size: 1.3rem;
 }
 
 .btnPlus {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   background: #ee4d2d;
   color: white;
   border: none;
@@ -306,344 +457,218 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.2s;
-  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
 }
 
 .btnPlus:hover {
-  background: #c0391b;
-  transform: scale(1.1);
+  background: #d73211;
+  transform: rotate(90deg) scale(1.1);
 }
 
-.textWarning {
-  color: #ffce3d;
-  margin-right: 5px;
-}
-
-/* SIDEBAR WIREFRAME STYLE (FILTER BOX) */
-.sidebarWireframe {
-  width: 260px;
-  flex-shrink: 0;
-  background: white;
-  border: none;
-  border-radius: 8px;
-  padding: 25px;
-  height: fit-content;
-  position: sticky;
-  top: 90px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.filterTitle {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.filterSection {
-  margin-bottom: 25px;
-}
-
-.filterSection h4 {
-  font-size: 1rem;
-  color: #444;
-  margin-bottom: 12px;
-  font-weight: 600;
-}
-
-/* Checkbox Row styling */
-.checkboxRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-  color: #555;
-  cursor: pointer;
-}
-
-.checkboxRow input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: #ee4d2d;
-}
-
-/* Price Range Inputs & Slider */
-.priceInputs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.priceBox {
-  width: 45%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: center;
-  border-radius: 4px;
-  outline: none;
-  background: white;
-  color: #333;
-}
-
-.dash {
-  font-weight: bold;
-  color: #999;
-}
-
-.rangeSlider {
-  width: 100%;
-  height: 5px;
-  background: #ddd;
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
-  accent-color: #ee4d2d;
-}
-
-/* Sort Box styling */
-.sortBox {
-  border: 1px solid #ddd;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 6px;
-  background: #fff;
-}
-
-.sortBox span {
-  font-size: 0.9rem;
-  color: #666;
-  white-space: nowrap; 
-  flex-shrink: 0;   
-}
-
-.sortBox select {
-  border: none;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 500;
-  outline: none;
-  flex: 1;
-  cursor: pointer;
-  color: #333;
-  width: 100%;
-}
-/* PRODUCT DETAIL MODAL */
+/* -----------------------------------------
+   PRODUCT DETAIL MODAL (CHI TIẾT 200 DÒNG)
+   ----------------------------------------- */
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--z-modal, 999);
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.3s ease;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.4s ease;
 }
 
 .modalContent {
   background: #fff;
-  width: 500px;
-  border-radius: 12px;
+  width: 550px;
+  border-radius: 20px;
   overflow: hidden;
   position: relative;
-  animation: slideUp 0.3s ease;
-  max-height: 90vh;
-  overflow-y: auto;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
 }
 
 .modalImageBox {
-  height: 200px;
-  background: #f0f0f0;
+  height: 260px;
+  background: #f8f8f8;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-bottom: 1px solid #eee;
 }
 
 .modalCloseBtn {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #fff;
+  top: 20px;
+  right: 20px;
+  background: white;
   border: none;
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  z-index: 10;
+  transition: 0.2s;
 }
 
 .modalCloseBtn:hover {
-  background: #f5f5f5;
+  transform: rotate(90deg);
+  color: #ee4d2d;
 }
 
 .modalBody {
-  padding: 20px;
+  padding: 30px;
+  overflow-y: auto;
 }
 
 .modalBody h2 {
-  margin: 0 0 5px 0;
+  font-size: 1.8rem;
+  margin: 0 0 10px 0;
   color: #222;
+  font-weight: 800;
 }
 
 .modalBody > p {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 20px;
-}
-
-.optionsScroll {
-  padding-right: 5px;
+  color: #777;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 25px;
 }
 
 .optGroup {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .optGroupHeader {
   display: flex;
   justify-content: space-between;
-  background: #f8f9fa;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 10px;
+  background: #fdf2f0;
+  padding: 12px 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
   align-items: center;
 }
 
 .optGroupHeader strong {
-  color: #333;
+  color: #ee4d2d;
+  font-size: 1rem;
 }
 
 .optGroupRequired {
-  font-size: 0.75rem;
-  color: #ee4d2d;
-  background: #fff1f0;
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-size: 0.7rem;
+  color: white;
+  background: #ee4d2d;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .optItem {
   display: flex;
   justify-content: space-between;
-  margin: 12px 0;
+  align-items: center;
+  padding: 12px 5px;
   cursor: pointer;
-  color: #555;
+  border-bottom: 1px solid #f9f9f9;
+  transition: 0.2s;
+}
+
+.optItem:hover {
+  background: #fafafa;
+}
+
+.modalFooter {
+  padding: 20px 30px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .quantityControl {
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 10px;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  background: #fff;
 }
 
 .quantityBtn {
-  padding: 8px 15px;
+  padding: 10px 18px;
   border: none;
-  background: #fff;
+  background: transparent;
   cursor: pointer;
-  font-size: 1rem;
-  color: #333;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #555;
 }
 
 .quantityDisplay {
-  padding: 0 15px;
-  font-weight: bold;
-  color: #333;
-}
-
-.modalFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-  margin-top: 15px;
+  padding: 0 10px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  min-width: 30px;
+  text-align: center;
 }
 
 .addToCartBtn {
   background: #ee4d2d;
   border: none;
-  color: #fff;
-  font-weight: bold;
+  color: white;
+  font-weight: 800;
   cursor: pointer;
-  padding: 12px 15px;
-  border-radius: 6px;
+  padding: 15px 25px;
+  border-radius: 12px;
   flex: 1;
-  margin-left: 15px;
-  transition: 0.2s;
+  font-size: 1rem;
+  transition: 0.3s;
+  box-shadow: 0 6px 15px rgba(238, 77, 45, 0.3);
 }
 
 .addToCartBtn:hover {
   background: #d73211;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(238, 77, 45, 0.4);
 }
 
-/* Animations */
+/* -----------------------------------------
+   RESPONSIVE & ANIMATIONS
+   ----------------------------------------- */
+@media (max-width: 1100px) {
+  .gridV2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroTitle { font-size: 2.2rem; }
+  .mainContentArea { flex-direction: column; }
+  .sidebarWireframe { width: 100%; position: static; margin-bottom: 30px; }
+  .gridV2 { grid-template-columns: repeat(1, 1fr); }
+  .modalContent { width: 95%; }
+}
+
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* RESPONSIVE MOBILE */
-@media (max-width: 768px) {
-  .mainContentArea {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .sidebarWireframe {
-    width: 100%;
-    position: static;
-    sticky: none;
-    top: auto;
-  }
-
-  .gridV2 {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-  }
-
-  .heroTitle {
-    font-size: 1.8rem;
-  }
-
-  .modalContent {
-    width: 90%;
-    max-width: 400px;
-  }
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
