@@ -54,9 +54,9 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
           
           <div className={styles.optionsScroll}>
             <div className={styles.optGroup}>
-              <div className={styles.optHeader}>
+              <div className={styles.optGroupHeader}>
                 <strong>Chọn Size</strong>
-                <span className={styles.badgeRequired}>Bắt buộc</span>
+                <span className={styles.optGroupRequired}>Bắt buộc</span>
               </div>
               {['M', 'L'].map(size => (
                 <label key={size} className={styles.optItem}>
@@ -74,9 +74,9 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
             </div>
 
             <div className={styles.optGroup}>
-              <div className={styles.optHeader}>
+              <div className={styles.optGroupHeader}>
                 <strong>Topping thêm</strong>
-                <span className={styles.badgeOptional}>Tùy chọn</span>
+                <span style={{ fontSize: '0.7rem', color: '#999' }}>Tùy chọn</span>
               </div>
               <label className={styles.optItem}>
                 <span>
@@ -189,31 +189,88 @@ export default function Home() {
       </div>
 
       <div className={styles.mainContentArea}>
-        {/* Sidebar Filters */}
-        <aside className={styles.sidebar}>
-          <h3 className={styles.filterTitle}>Bộ lọc</h3>
+        
+        {/* BỘ LỌC ĐÃ ĐƯỢC UPGRADE LÊN BẢN MỚI */}
+        <aside className={styles.sidebarWireframe}>
+          <div className={styles.filterTitle}>
+            <span>Filter</span>
+            <i className="fa-solid fa-filter"></i>
+          </div>
+
+          {/* Nhóm 1: Categories */}
           <div className={styles.filterSection}>
-            <h4>Khoảng giá</h4>
+            <h4>CATEGORIES</h4>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" defaultChecked /> Food
+              </div>
+            </label>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" /> Beverage
+              </div>
+            </label>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" /> Dessert
+              </div>
+            </label>
+          </div>
+
+          {/* Nhóm 2: Price Range */}
+          <div className={styles.filterSection}>
+            <h4>PRICE RANGE ($)</h4>
             <div className={styles.priceInputs}>
-              <input 
-                type="number" 
-                className={styles.priceBox} 
-                value={priceFilter.min} 
-                onChange={(e) => setPriceFilter({...priceFilter, min: +e.target.value})} 
-              />
-              <span>-</span>
-              <input 
-                type="number" 
-                className={styles.priceBox} 
-                value={priceFilter.max} 
-                onChange={(e) => setPriceFilter({...priceFilter, max: +e.target.value})} 
-              />
+              <input type="number" className={styles.priceBox} placeholder="Min" />
+              <span className={styles.dash}>-</span>
+              <input type="number" className={styles.priceBox} placeholder="Max" />
+            </div>
+            <input type="range" className={styles.rangeSlider} min="0" max="100" defaultValue="30" />
+          </div>
+
+          {/* Nhóm 3: Distance */}
+          <div className={styles.filterSection}>
+            <h4>DISTANCE</h4>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" defaultChecked /> Under 1 km
+              </div>
+            </label>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" /> 1 - 3 km
+              </div>
+            </label>
+            <label className={styles.checkboxRow}>
+              <div className={styles.checkboxLabel}>
+                <input type="checkbox" /> Over 3 km
+              </div>
+            </label>
+          </div>
+
+          {/* Nhóm 4: Sort (Giống bản vẽ tay) */}
+          <div className={styles.filterSection}>
+            <h4>SORT BY</h4>
+            <div className={styles.sortBox}>
+              <select>
+                <option>Nearest</option>
+                <option>Price: Low to High</option>
+                <option>Rating: High to Low</option>
+              </select>
             </div>
           </div>
-          <button className={styles.btnApply}>Áp dụng</button>
+
+          {/* Các nút hành động */}
+          <div className={styles.filterActions}>
+            <button className={styles.applyFilterBtn}>APPLY FILTER</button>
+            <button className={styles.clearFilterBtn}>Clear all</button>
+          </div>
         </aside>
+
         <main className={styles.productSection}>
-          <h3 className={styles.sectionTitle}>Ưu đãi hôm nay</h3>
+          <div className={styles.sectionHead}>
+            <h3>Ưu đãi hôm nay</h3>
+          </div>
 
           {loading ? (
             <div className={styles.statusMsg}>Đang tải món ăn...</div>
@@ -227,11 +284,16 @@ export default function Home() {
                 >
                   <div className={styles.cardThumb}>
                     {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} />
+                      <img src={product.image_url} alt={product.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                     ) : (
                       <div className={styles.imgPlaceholder}><i className="fa-solid fa-utensils"></i></div>
                     )}
-                    {product.status === 'available' && <div className={styles.promoBadge}>-15k</div>}
+                    {product.status === 'available' && <div className={styles.badgeDeal}>-15k</div>}
+                    
+                    {/* Hiệu ứng hover cho card (tùy chọn hiện chữ) */}
+                    <div className={styles.overlayHover}>
+                      <span>Xem chi tiết</span>
+                    </div>
                   </div>
                   <div className={styles.cardDetails}>
                     <h4 className={styles.foodName}>{product.name}</h4>
