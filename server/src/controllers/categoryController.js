@@ -4,68 +4,30 @@ const categoryController = {
   async getAll(req, res) {
     try {
       const result = await categoryService.getAll();
-
       res.status(200).json({
         success: true,
-        message: 'Categories retrieved successfully',
         data: result
       });
     } catch (error) {
       res.status(500).json({
         success: false,
-        message: error.message,
-        data: null
-      });
-    }
-  },
-
-  async getById(req, res) {
-    try {
-      const { id } = req.params;
-
-      const result = await categoryService.getById(parseInt(id));
-
-      res.status(200).json({
-        success: true,
-        message: 'Category retrieved successfully',
-        data: result
-      });
-    } catch (error) {
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          success: false,
-          message: error.message,
-          data: null
-        });
-      }
-
-      res.status(500).json({
-        success: false,
-        message: error.message,
-        data: null
+        message: error.message
       });
     }
   },
 
   async create(req, res) {
     try {
-      const { name, description } = req.body;
-
-      const result = await categoryService.create({
-        name,
-        description
-      });
-
+      const { name } = req.body;
+      const result = await categoryService.create({ name });
       res.status(201).json({
         success: true,
-        message: 'Category created successfully',
         data: result
       });
     } catch (error) {
       res.status(400).json({
         success: false,
-        message: error.message,
-        data: null
+        message: error.message
       });
     }
   },
@@ -73,28 +35,33 @@ const categoryController = {
   async update(req, res) {
     try {
       const { id } = req.params;
-      const updateData = req.body;
-
-      const result = await categoryService.update(parseInt(id), updateData);
-
+      const { name } = req.body;
+      const result = await categoryService.update(parseInt(id), { name });
       res.status(200).json({
         success: true,
-        message: 'Category updated successfully',
         data: result
       });
     } catch (error) {
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          success: false,
-          message: error.message,
-          data: null
-        });
-      }
-
       res.status(400).json({
         success: false,
-        message: error.message,
-        data: null
+        message: error.message
+      });
+    }
+  },
+
+  async toggleStatus(req, res) {
+    try {
+      const { id } = req.params;
+      const { is_active } = req.body;
+      const result = await categoryService.toggle(id, is_active);
+      res.status(200).json({
+        success: true,
+        data: result
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error.message
       });
     }
   },
@@ -102,27 +69,15 @@ const categoryController = {
   async delete(req, res) {
     try {
       const { id } = req.params;
-
       await categoryService.delete(parseInt(id));
-
       res.status(200).json({
         success: true,
-        message: 'Category deleted successfully',
-        data: null
+        message: 'Deleted successfully'
       });
     } catch (error) {
-      if (error.message.includes('not found')) {
-        return res.status(404).json({
-          success: false,
-          message: error.message,
-          data: null
-        });
-      }
-
-      res.status(500).json({
+      res.status(400).json({
         success: false,
-        message: error.message,
-        data: null
+        message: error.message
       });
     }
   }

@@ -108,3 +108,18 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+.line-height-1 {
+  line-height: 1.2;
+}
+
+.dropdown-item {
+  font-size: 14px;
+}
+
+.dropdown-item:active {
+  background-color: #ee4d2d;
+}
+
+.navbar-brand span {
+  letter-spacing: -1px;
+}
