@@ -1,13 +1,14 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { AppContext } from '../context/AppContext';
-import { getFoods, searchFoods } from '../services/foodService';
+import foodService from '../services/foodService';
 import styles from './Home.module.css';
 
 function ProductDetailModal({ product, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedToppings, setSelectedToppings] = useState([]);
-  const basePriceWithSize = selectedSize === 'L' ? product.price + 2 : product.price;
+  
+  const basePriceWithSize = selectedSize === 'L' ? (product.price || 0) + 2 : (product.price || 0);
   const toppingPrice = selectedToppings.reduce((sum, topping) => {
     if (topping === 'Egg') return sum + 1;
     if (topping === 'Cheese') return sum + 1.5;
@@ -24,14 +25,13 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
   const handleAddToCart = () => {
     onAddToCart({
       ...product,
+      food_id: product.id,
       size: selectedSize,
       extras: selectedToppings,
       quantity,
       totalPrice,
       selected_options: { size: selectedSize, extras: selectedToppings }
     });
-    setQuantity(1);
-    setSelectedToppings([]);
     onClose();
   };
 
@@ -46,11 +46,9 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
           )}
           <button onClick={onClose} className={styles.modalCloseBtn}>✕</button>
         </div>
-
         <div className={styles.modalBody}>
           <h2>{product.name}</h2>
           <p className={styles.modalDesc}>Món ăn được chế biến từ nguyên liệu tươi ngon nhất.</p>
-          
           <div className={styles.optionsScroll}>
             <div className={styles.optGroup}>
               <div className={styles.optGroupHeader}>
@@ -71,7 +69,6 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
                 </label>
               ))}
             </div>
-
             <div className={styles.optGroup}>
               <div className={styles.optGroupHeader}>
                 <strong>Topping thêm</strong>
@@ -91,7 +88,6 @@ function ProductDetailModal({ product, onClose, onAddToCart }) {
               </label>
             </div>
           </div>
-
           <div className={styles.modalFooter}>
             <div className={styles.quantityControl}>
               <button className={styles.quantityBtn} onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
@@ -113,39 +109,36 @@ export default function Home() {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [priceFilter, setPriceFilter] = useState({ min: 0, max: 100 });
+  const [filters, setFilters] = useState({
+    minPrice: '',
+    maxPrice: '',
+    sortBy: 'Nearest'
+  });
   
   const { state, dispatch } = useContext(AppContext);
+
   const loadFoods = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await getFoods();
+      const params = {
+        search: searchTerm,
+        min_price: filters.minPrice,
+        max_price: filters.maxPrice,
+        sort: filters.sortBy
+      };
+      const res = await foodService.getFoods(params);
       const data = res?.data || res || [];
       setFoods(data.length > 0 ? data : (state.products || []));
     } catch (error) {
-      console.error('Lỗi tải dữ liệu:', error);
       setFoods(state.products || []);
     } finally {
       setLoading(false);
     }
-  }, [state.products]);
+  }, [searchTerm, filters, state.products]);
 
   useEffect(() => {
     loadFoods();
   }, [loadFoods]);
-
-  const handleSearch = async () => {
-    if (!searchTerm.trim()) return loadFoods();
-    try {
-      setLoading(true);
-      const res = await searchFoods(searchTerm);
-      setFoods(res?.data || res || []);
-    } catch {
-      setFoods([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const addToCart = (payload) => {
     dispatch({ type: 'ADD_TO_CART', payload });
@@ -153,11 +146,17 @@ export default function Home() {
 
   const quickAddToCart = (product) => {
     addToCart({ 
-      ...product, 
+      ...product,
+      food_id: product.id,
       quantity: 1, 
       totalPrice: product.price, 
       selected_options: { size: 'M', extras: [] } 
     });
+  };
+
+  const handleClearFilter = () => {
+    setFilters({ minPrice: '', maxPrice: '', sortBy: 'Nearest' });
+    setSearchTerm('');
   };
 
   return (
@@ -172,9 +171,9 @@ export default function Home() {
               placeholder="Tìm địa điểm, món ăn..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyDown={(e) => e.key === 'Enter' && loadFoods()}
             />
-            <button className={styles.btnSearch} onClick={handleSearch}>
+            <button className={styles.btnSearch} onClick={loadFoods}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
@@ -187,81 +186,50 @@ export default function Home() {
       </div>
 
       <div className={styles.mainContentArea}>
-        
-        {/* BỘ LỌC ĐÃ ĐƯỢC UPGRADE LÊN BẢN MỚI */}
         <aside className={styles.sidebarWireframe}>
           <div className={styles.filterTitle}>
             <span>Filter</span>
             <i className="fa-solid fa-filter"></i>
           </div>
 
-          {/* Nhóm 1: Categories */}
-          <div className={styles.filterSection}>
-            <h4>CATEGORIES</h4>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" defaultChecked /> Food
-              </div>
-            </label>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" /> Beverage
-              </div>
-            </label>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" /> Dessert
-              </div>
-            </label>
-          </div>
-
-          {/* Nhóm 2: Price Range */}
           <div className={styles.filterSection}>
             <h4>PRICE RANGE ($)</h4>
             <div className={styles.priceInputs}>
-              <input type="number" className={styles.priceBox} placeholder="Min" />
+              <input 
+                type="number" 
+                className={styles.priceBox} 
+                placeholder="Min" 
+                value={filters.minPrice}
+                onChange={(e) => setFilters({...filters, minPrice: e.target.value})}
+              />
               <span className={styles.dash}>-</span>
-              <input type="number" className={styles.priceBox} placeholder="Max" />
+              <input 
+                type="number" 
+                className={styles.priceBox} 
+                placeholder="Max" 
+                value={filters.maxPrice}
+                onChange={(e) => setFilters({...filters, maxPrice: e.target.value})}
+              />
             </div>
-            <input type="range" className={styles.rangeSlider} min="0" max="100" defaultValue="30" />
           </div>
 
-          {/* Nhóm 3: Distance */}
-          <div className={styles.filterSection}>
-            <h4>DISTANCE</h4>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" defaultChecked /> Under 1 km
-              </div>
-            </label>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" /> 1 - 3 km
-              </div>
-            </label>
-            <label className={styles.checkboxRow}>
-              <div className={styles.checkboxLabel}>
-                <input type="checkbox" /> Over 3 km
-              </div>
-            </label>
-          </div>
-
-          {/* Nhóm 4: Sort (Giống bản vẽ tay) */}
           <div className={styles.filterSection}>
             <h4>SORT BY</h4>
             <div className={styles.sortBox}>
-              <select>
-                <option>Nearest</option>
-                <option>Price: Low to High</option>
-                <option>Rating: High to Low</option>
+              <select 
+                value={filters.sortBy} 
+                onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+              >
+                <option value="Nearest">Nearest</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
               </select>
             </div>
           </div>
 
-          {/* Các nút hành động */}
           <div className={styles.filterActions}>
-            <button className={styles.applyFilterBtn}>APPLY FILTER</button>
-            <button className={styles.clearFilterBtn}>Clear all</button>
+            <button className={styles.applyFilterBtn} onClick={loadFoods}>APPLY FILTER</button>
+            <button className={styles.clearFilterBtn} onClick={handleClearFilter}>Clear all</button>
           </div>
         </aside>
 
@@ -287,8 +255,6 @@ export default function Home() {
                       <div className={styles.imgPlaceholder}><i className="fa-solid fa-utensils"></i></div>
                     )}
                     {product.status === 'available' && <div className={styles.badgeDeal}>-15k</div>}
-                    
-                    {/* Hiệu ứng hover cho card (tùy chọn hiện chữ) */}
                     <div className={styles.overlayHover}>
                       <span>Xem chi tiết</span>
                     </div>

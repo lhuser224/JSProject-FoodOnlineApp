@@ -3,12 +3,18 @@ const foodService = require('../services/foodService');
 const foodController = {
   async getAll(req, res) {
     try {
-      const { shopId, categoryId, search } = req.query;
+      const { shopId, categoryId, search, status, limit, page, minPrice, maxPrice, sortBy } = req.query;
 
       const result = await foodService.getAll({
         shopId: shopId ? parseInt(shopId) : undefined,
         categoryId: categoryId ? parseInt(categoryId) : undefined,
-        search
+        search,
+        status,
+        limit,
+        page,
+        minPrice,
+        maxPrice,
+        sortBy
       });
 
       res.status(200).json({
@@ -28,7 +34,6 @@ const foodController = {
   async getById(req, res) {
     try {
       const { id } = req.params;
-
       const result = await foodService.getById(parseInt(id));
 
       res.status(200).json({
@@ -44,7 +49,6 @@ const foodController = {
           data: null
         });
       }
-
       res.status(500).json({
         success: false,
         message: error.message,
@@ -55,19 +59,23 @@ const foodController = {
 
   async create(req, res) {
     try {
-      const { name, price, image_url, shop_id, category_id } = req.body;
+      const { name, price, shop_id, category_id } = req.body;
+      
+      const image_url = req.file 
+        ? `/uploads/${req.file.filename}` 
+        : (req.body.image_url || '');
 
       const result = await foodService.create({
         name,
-        price: parseFloat(price),
+        price: parseFloat(price) || 0,
         image_url,
         shop_id: parseInt(shop_id),
-        category_id: parseInt(category_id)
+        category_id: category_id ? parseInt(category_id) : null
       });
 
       res.status(201).json({
         success: true,
-        message: 'Food created successfully',
+        message: 'Tạo món ăn thành công',
         data: result
       });
     } catch (error) {
@@ -83,6 +91,10 @@ const foodController = {
     try {
       const { id } = req.params;
       const updateData = req.body;
+
+      if (req.file) {
+        updateData.image_url = `/uploads/${req.file.filename}`;
+      }
 
       if (updateData.price) {
         updateData.price = parseFloat(updateData.price);
@@ -103,7 +115,6 @@ const foodController = {
           data: null
         });
       }
-
       res.status(400).json({
         success: false,
         message: error.message,
@@ -115,12 +126,11 @@ const foodController = {
   async delete(req, res) {
     try {
       const { id } = req.params;
-
-      await foodService.delete(parseInt(id));
+      await foodService.softDelete(parseInt(id));
 
       res.status(200).json({
         success: true,
-        message: 'Food deleted successfully',
+        message: 'Món ăn đã được ẩn thành công',
         data: null
       });
     } catch (error) {
@@ -131,7 +141,6 @@ const foodController = {
           data: null
         });
       }
-
       res.status(500).json({
         success: false,
         message: error.message,
@@ -143,7 +152,6 @@ const foodController = {
   async getByShop(req, res) {
     try {
       const { shopId } = req.params;
-
       const result = await foodService.getByShop(parseInt(shopId));
 
       res.status(200).json({
@@ -163,7 +171,6 @@ const foodController = {
   async getByCategory(req, res) {
     try {
       const { categoryId } = req.params;
-
       const result = await foodService.getByCategory(parseInt(categoryId));
 
       res.status(200).json({
@@ -183,7 +190,6 @@ const foodController = {
   async toggleStatus(req, res) {
     try {
       const { id } = req.params;
-
       const result = await foodService.toggleStatus(parseInt(id));
 
       res.status(200).json({
@@ -199,7 +205,6 @@ const foodController = {
           data: null
         });
       }
-
       res.status(500).json({
         success: false,
         message: error.message,

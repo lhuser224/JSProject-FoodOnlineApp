@@ -30,13 +30,12 @@ const foodService = {
     return await Food.update(id, updateData);
   },
 
-  async delete(id) {
+  async softDelete(id) {
     const food = await Food.findById(id);
     if (!food) {
-      throw new Error('Food not found');
+      throw new Error('Món ăn không tồn tại');
     }
-
-    return await Food.delete(id);
+    return await Food.softDelete(id);
   },
 
   async getByShop(shopId) {
@@ -49,17 +48,23 @@ const foodService = {
 
   async toggleStatus(id) {
     const food = await Food.findById(id);
-    if (!food) throw new Error('Food not found');
+    if (!food) {
+      throw new Error('Food not found');
+    }
+    
     if (food.status === 'hidden') {
-      throw new Error('Cannot toggle status of a hidden food. Unhide it first.');
+      throw new Error('Không thể thay đổi trạng thái món ăn đã bị ẩn/xóa');
     }
 
     const newStatus = food.status === 'available' ? 'unavailable' : 'available';
     return await Food.updateStatus(id, newStatus);
   },
+
   async toggleVisibility(id) {
     const food = await Food.findById(id);
-    if (!food) throw new Error('Food not found');
+    if (!food) {
+      throw new Error('Food not found');
+    }
     const newStatus = food.status === 'hidden' ? 'available' : 'hidden';
     
     return await Food.updateStatus(id, newStatus);
