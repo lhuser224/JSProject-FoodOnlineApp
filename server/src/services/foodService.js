@@ -49,11 +49,19 @@ const foodService = {
 
   async toggleStatus(id) {
     const food = await Food.findById(id);
-    if (!food) {
-      throw new Error('Food not found');
+    if (!food) throw new Error('Food not found');
+    if (food.status === 'hidden') {
+      throw new Error('Cannot toggle status of a hidden food. Unhide it first.');
     }
 
     const newStatus = food.status === 'available' ? 'unavailable' : 'available';
+    return await Food.updateStatus(id, newStatus);
+  },
+  async toggleVisibility(id) {
+    const food = await Food.findById(id);
+    if (!food) throw new Error('Food not found');
+    const newStatus = food.status === 'hidden' ? 'available' : 'hidden';
+    
     return await Food.updateStatus(id, newStatus);
   }
 };
