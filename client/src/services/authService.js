@@ -1,8 +1,13 @@
 import axiosClient from '../api/axiosClient';
-//regular expression to validate phone number (10-15 digits)
+
 const validatePhone = (phone) => {
-  const re = /^[0-9]{10,15}$/;
+  const re = /^(0[3|5|7|8|9])([0-9]{8})$/;
   return re.test(phone);
+};
+
+const validatePassword = (password) => {
+  const re = /^(?=.*[a-zA-Z]).{8,}$/;
+  return re.test(password);
 };
 
 export const login = async (phone, password) => {
@@ -10,7 +15,7 @@ export const login = async (phone, password) => {
     throw new Error('Số điện thoại và mật khẩu không được để trống');
   }
   if (!validatePhone(phone.trim())) {
-    throw new Error('Số điện thoại không hợp lệ (phải từ 10-15 chữ số)');
+    throw new Error('Số điện thoại không hợp lệ (phải có 10 chữ số)');
   }
 
   const payload = {
@@ -32,8 +37,8 @@ export const register = async (fullName, phone, password, passwordConfirm) => {
   if (!validatePhone(phone.trim())) {
     throw new Error('Số điện thoại không hợp lệ');
   }
-  if (password.length < 6) {
-    throw new Error('Mật khẩu phải có ít nhất 6 ký tự');
+  if (!validatePassword(password)) {
+    throw new Error('Mật khẩu phải có ít nhất 8 ký tự và bao gồm ít nhất 1 chữ cái');
   }
   if (password !== passwordConfirm) {
     throw new Error('Mật khẩu xác nhận không khớp');
@@ -55,12 +60,15 @@ export const updateProfile = async (userData) => {
 };
 
 export const changePassword = async (oldPassword, newPassword) => {
+  if (!validatePassword(newPassword)) {
+    throw new Error('Mật khẩu mới phải có ít nhất 8 ký tự và bao gồm ít nhất 1 chữ cái');
+  }
   const payload = { oldPassword, newPassword };
   return await axiosClient.put('/FoodO/auth/change-password', payload);
 };
 
 export const getProfile = async () => {
-  return await axiosClient.get('/FoodO/auth/me'); 
+  return await axiosClient.get('/FoodO/auth/me');
 };
 
-export default { login, register };
+export default { login, register, updateProfile, changePassword, getProfile };

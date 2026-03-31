@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import OptionManager from './OptionManager';
-import categoryService from '../services/categoryService'; 
+import categoryService from '../services/categoryService';
+
+const SERVER_URL = 'http://localhost:3000';
 
 export default function FoodModal({ show, onClose, formData, setFormData, onSave, loading }) {
   const [categories, setCategories] = useState([]);
@@ -14,7 +16,7 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
             setCategories(res.data);
           }
         } catch (error) {
-          console.error("Không thể tải danh mục món ăn:", error);
+          console.error("Lỗi khi lấy danh mục:", error);
         }
       };
       fetchCategories();
@@ -26,12 +28,24 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (formData.image_url && formData.image_url.startsWith('blob:')) {
+        URL.revokeObjectURL(formData.image_url);
+      }
       setFormData({
         ...formData,
         imageFile: file,
         image_url: URL.createObjectURL(file)
       });
     }
+  };
+
+  const getImageUrl = () => {
+    if (!formData.image_url) return 'https://via.placeholder.com/150?text=No+Image';
+    if (formData.image_url.startsWith('blob:')) return formData.image_url;
+    // Nếu image_url đã có http sẵn (từ placeholder hoặc server khác) thì trả về luôn
+    if (formData.image_url.startsWith('http')) return formData.image_url;
+    // Mặc định nối với SERVER_URL cho ảnh từ backend
+    return `${SERVER_URL}${formData.image_url}`;
   };
 
   return (
@@ -54,6 +68,7 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
                         value={formData.name || ''} 
                         onChange={e => setFormData({...formData, name: e.target.value})} />
                     </div>
+
                     <div className="row">
                       <div className="col-6 mb-3">
                         <label className="form-label small fw-bold">Giá ($)</label>
@@ -61,6 +76,7 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
                           value={formData.price || ''} 
                           onChange={e => setFormData({...formData, price: e.target.value})} />
                       </div>
+
                       <div className="col-6 mb-3">
                         <label className="form-label small fw-bold">Danh mục</label>
                         <select 
@@ -69,15 +85,14 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
                           value={formData.category_id || ''} 
                           onChange={e => setFormData({...formData, category_id: e.target.value})}
                         >
-                          <option value="">Chọn danh mục</option>
+                          <option value="">-- Chọn danh mục --</option>
                           {categories.map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </option>
+                            <option key={cat.id} value={cat.id}>{cat.name}</option>
                           ))}
                         </select>
                       </div>
                     </div>
+
                     <div className="mb-3">
                       <label className="form-label small fw-bold">Hình ảnh món ăn</label>
                       <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
@@ -88,10 +103,13 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
                     <p className="small fw-bold text-muted mb-2">Xem trước hình ảnh</p>
                     <div className="border bg-white rounded" style={{ width: '100%', height: '150px', overflow: 'hidden' }}>
                       <img 
-                        src={formData.image_url || 'https://via.placeholder.com/150?text=No+Image'} 
+                        src={getImageUrl()} 
                         alt="Preview" 
                         className="w-100 h-100" style={{ objectFit: 'cover' }}
-                        onError={(e) => e.target.src = 'https://via.placeholder.com/150?text=Error+Link'}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://via.placeholder.com/150?text=Error+Image';
+                        }}
                       />
                     </div>
                   </div>
@@ -100,6 +118,8 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
                 <hr className="my-4" />
 
                 <OptionManager 
+                  foodId={formData.id}
+                  shopId={formData.shop_id}
                   options={formData.options || []} 
                   setOptions={(newOptions) => setFormData({...formData, options: newOptions})} 
                 />

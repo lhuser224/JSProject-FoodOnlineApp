@@ -1,8 +1,8 @@
 const Category = require('../models/Category');
 
 const categoryService = {
-  async getAll() {
-    return await Category.findAll();
+  async getAll(filters = {}) {
+    return await Category.findAll(filters);
   },
 
   async create(categoryData) {

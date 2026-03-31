@@ -4,6 +4,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
+// GET /api/categories?is_active=1
 router.get('/', categoryController.getAll);
 
 router.post('/', authMiddleware.verifyToken, authMiddleware.isAdmin, categoryController.create);

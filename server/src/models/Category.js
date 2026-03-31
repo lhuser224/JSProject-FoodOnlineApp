@@ -1,8 +1,18 @@
 const db = require('../config/db');
 
 const Category = {
-  async findAll() {
-    const [rows] = await db.query('SELECT * FROM categories ORDER BY id DESC');
+  async findAll(filters = {}) {
+    let query = 'SELECT * FROM categories';
+    const queryParams = [];
+
+    // Kiểm tra nếu có lọc theo trạng thái hoạt động
+    if (filters.is_active !== undefined) {
+      query += ' WHERE is_active = ?';
+      queryParams.push(filters.is_active);
+    }
+
+    query += ' ORDER BY id DESC';
+    const [rows] = await db.query(query, queryParams);
     return rows;
   },
 

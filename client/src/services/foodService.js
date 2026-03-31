@@ -22,8 +22,9 @@ const foodService = {
     formData.append('shop_id', parseInt(shopId));
     formData.append('category_id', parseInt(foodData.category_id || 1));
     
-    if (foodData.image) {
-      formData.append('image', foodData.image);
+    // Đổi từ image sang imageFile để lấy đúng file từ state
+    if (foodData.imageFile) {
+      formData.append('image', foodData.imageFile);
     }
 
     const response = await axiosClient.post(`${BASE_URL}/`, formData, {
@@ -41,8 +42,9 @@ const foodService = {
     if (updateData.price) formData.append('price', parseFloat(updateData.price));
     if (updateData.category_id) formData.append('category_id', parseInt(updateData.category_id));
     
-    if (updateData.image) {
-      formData.append('image', updateData.image);
+    // Đổi từ image sang imageFile để lấy đúng file từ state
+    if (updateData.imageFile) {
+      formData.append('image', updateData.imageFile);
     }
 
     const response = await axiosClient.patch(`${BASE_URL}/${foodId}`, formData, {

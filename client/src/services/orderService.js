@@ -1,5 +1,8 @@
 import axiosClient from '../api/axiosClient';
 
+// Thêm tiền tố FoodO/ giống như mẫu categoryService.js
+const BASE_URL = 'FoodO/orders'; 
+
 export const createOrder = async (orderData) => {
   try {
     if (!orderData.user_id || !orderData.shop_id || !orderData.items || orderData.items.length === 0) {
@@ -23,7 +26,8 @@ export const createOrder = async (orderData) => {
       status: orderData.status || 'Processing'
     };
 
-    const response = await axiosClient.post('/orders', payload);
+    // Sử dụng BASE_URL
+    const response = await axiosClient.post(`${BASE_URL}`, payload);
     return response;
   } catch (error) {
     console.error('Error creating order:', error);
@@ -36,8 +40,8 @@ export const getOrderHistory = async (userId) => {
     if (!userId) {
       throw new Error('userId is required');
     }
-
-    const response = await axiosClient.get(`/orders/history/${userId}`);
+    // Sửa đường dẫn API theo tiền tố FoodO
+    const response = await axiosClient.get(`${BASE_URL}/history/${userId}`);
     return response;
   } catch (error) {
     console.error('Error fetching order history:', error);
@@ -50,8 +54,7 @@ export const getOrderById = async (orderId) => {
     if (!orderId) {
       throw new Error('orderId is required');
     }
-
-    const response = await axiosClient.get(`/orders/${orderId}`);
+    const response = await axiosClient.get(`${BASE_URL}/${orderId}`);
     return response;
   } catch (error) {
     console.error('Error fetching order:', error);
@@ -59,21 +62,14 @@ export const getOrderById = async (orderId) => {
   }
 };
 
-
 export const cancelOrder = async (orderId, reason, dispatchContext) => {
   try {
     if (!orderId || !reason) {
       throw new Error('orderId and reason are required');
     }
 
-    const payload = {
-      reason
-    };
-
-    const response = await axiosClient.patch(
-      `/orders/${orderId}/cancel`,
-      payload
-    );
+    const payload = { reason };
+    const response = await axiosClient.patch(`${BASE_URL}/${orderId}/cancel`, payload);
 
     if (dispatchContext) {
       dispatchContext({
@@ -96,11 +92,7 @@ export const updateOrderStatus = async (orderId, status, dispatchContext) => {
     }
 
     const payload = { status };
-
-    const response = await axiosClient.patch(
-      `/orders/${orderId}`,
-      payload
-    );
+    const response = await axiosClient.patch(`${BASE_URL}/${orderId}`, payload);
 
     if (dispatchContext) {
       dispatchContext({
@@ -118,7 +110,7 @@ export const updateOrderStatus = async (orderId, status, dispatchContext) => {
 
 export const getOrderStats = async (userId) => {
   try {
-    const response = await axiosClient.get(`/orders/stats/${userId}`);
+    const response = await axiosClient.get(`${BASE_URL}/stats/${userId}`);
     return response;
   } catch (error) {
     console.error('Error fetching order stats:', error);
@@ -129,8 +121,6 @@ export const getOrderStats = async (userId) => {
 export const calculateSubtotal = (items) => {
   return items.reduce((sum, item) => {
     let itemPrice = item.price || 0;
-
-    // Add option prices if they exist
     if (item.selected_options) {
       if (item.selected_options.extras) {
         item.selected_options.extras.forEach((extra) => {
@@ -140,7 +130,6 @@ export const calculateSubtotal = (items) => {
       }
       if (item.selected_options.size === 'L') itemPrice += 2;
     }
-
     return sum + (itemPrice * (item.quantity || 1));
   }, 0);
 };
@@ -150,7 +139,7 @@ export const getShopOrders = async (shopId) => {
     if (!shopId) {
       throw new Error('shopId is required');
     }
-    const response = await axiosClient.get(`/orders/shop/${shopId}`);
+    const response = await axiosClient.get(`${BASE_URL}/shop/${shopId}`);
     return response;
   } catch (error) {
     console.error('Error fetching shop orders:', error);

@@ -9,6 +9,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const optionRoutes = require('./routes/optionRoutes');
 const adminRoutes = require('./routes/AdminRoutes');
+const addressRoutes = require('./routes/addressRoutes');
 
 const app = express();
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 const foodORouter = express.Router();
 
+
+foodORouter.use('/addresses', addressRoutes);
 foodORouter.use('/admin', adminRoutes);
 foodORouter.use('/auth', authRoutes);
 foodORouter.use('/foods', foodRoutes);

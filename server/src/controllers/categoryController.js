@@ -3,7 +3,8 @@ const categoryService = require('../services/categoryService');
 const categoryController = {
   async getAll(req, res) {
     try {
-      const result = await categoryService.getAll();
+      // req.query sẽ chứa { is_active: '1' } nếu URL là ?is_active=1
+      const result = await categoryService.getAll(req.query);
       res.status(200).json({
         success: true,
         data: result
@@ -15,20 +16,17 @@ const categoryController = {
       });
     }
   },
-
+  
   async create(req, res) {
     try {
       const { name } = req.body;
       const result = await categoryService.create({ name });
-      res.status(201).json({
-        success: true,
-        data: result
-      });
+      res.status(201).json({ success: true, data: result });
     } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: error.message
-      });
+      if (error.code === 'ER_DUP_ENTRY' || error.errno === 1062) {
+        return res.status(400).json({ success: false, message: 'Tên danh mục đã tồn tại!' });
+      }
+      res.status(400).json({ success: false, message: error.message });
     }
   },
 
@@ -37,15 +35,9 @@ const categoryController = {
       const { id } = req.params;
       const { name } = req.body;
       const result = await categoryService.update(parseInt(id), { name });
-      res.status(200).json({
-        success: true,
-        data: result
-      });
+      res.status(200).json({ success: true, data: result });
     } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: error.message
-      });
+      res.status(400).json({ success: false, message: error.message });
     }
   },
 
@@ -54,15 +46,9 @@ const categoryController = {
       const { id } = req.params;
       const { is_active } = req.body;
       const result = await categoryService.toggle(id, is_active);
-      res.status(200).json({
-        success: true,
-        data: result
-      });
+      res.status(200).json({ success: true, data: result });
     } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: error.message
-      });
+      res.status(400).json({ success: false, message: error.message });
     }
   },
 
@@ -70,15 +56,9 @@ const categoryController = {
     try {
       const { id } = req.params;
       await categoryService.delete(parseInt(id));
-      res.status(200).json({
-        success: true,
-        message: 'Deleted successfully'
-      });
+      res.status(200).json({ success: true, message: 'Deleted successfully' });
     } catch (error) {
-      res.status(400).json({
-        success: false,
-        message: error.message
-      });
+      res.status(400).json({ success: false, message: error.message });
     }
   }
 };

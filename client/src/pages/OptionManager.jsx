@@ -1,100 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import optionService from '../services/optionService';
 
 export default function OptionManager({ foodId, shopId, options = [], setOptions }) {
-  
+  const [libraryGroups, setLibraryGroups] = useState([]); // Tất cả nhóm của Shop
+
   useEffect(() => {
-    if (foodId) {
-      const fetchOptions = async () => {
-        try {
-          const res = await optionService.getFoodCustomization(foodId);
-          setOptions(res.data || []); 
-        } catch (err) {
-          console.error("Lỗi lấy tùy chọn:", err);
-        }
-      };
-      fetchOptions();
+    if (shopId) {
+      fetchLibrary();
     }
-  }, [foodId, setOptions]);
+  }, [shopId, foodId]);
 
-  const handleAddGroup = async () => {
+  const fetchLibrary = async () => {
     try {
-      const payload = { 
-        name: "Nhóm mới", 
-        shop_id: shopId, 
-        is_required: false 
-      };
+      // Lấy tất cả nhóm của shop
+      const res = await optionService.getGroupsByShop(shopId);
+      setLibraryGroups(res.data || []);
       
-      const resGroup = await optionService.createGroup(payload);
-      const newGroup = { ...resGroup.data, items: [] };
-
-      await optionService.assignToFood(foodId, newGroup.id);
-
-      setOptions([...options, newGroup]);
-    } catch (err) {
-      alert("Lỗi khi thêm nhóm tùy chọn");
-    }
+      // Nếu đang sửa món ăn, lấy danh sách nhóm đã gán cho món đó
+      if (foodId) {
+        const assigned = await optionService.getFoodCustomization(foodId);
+        setOptions(assigned.data || []);
+      }
+    } catch (err) { console.error(err); }
   };
 
-  const handleAddItem = async (groupId) => {
+  const handleToggleAssign = async (groupId, isAssigned) => {
     try {
-      const payload = {
-        group_id: groupId,
-        name: "Tùy chọn mới",
-        price: 0
-      };
-      
-      const resItem = await optionService.addItem(payload);
-      
-      setOptions(options.map(g => 
-        g.id === groupId ? { ...g, items: [...g.items, resItem.data] } : g
-      ));
-    } catch (err) {
-      alert("Lỗi khi thêm lựa chọn lẻ");
-    }
+      if (isAssigned) {
+        await optionService.removeFromFood(foodId, groupId);
+      } else {
+        await optionService.assignToFood(foodId, groupId);
+      }
+      fetchLibrary(); // Refresh để cập nhật trạng thái
+    } catch (err) { alert("Lỗi khi thay đổi liên kết"); }
   };
 
   return (
     <div className="option-section border rounded p-3 bg-white">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-bold mb-0 text-primary">
-          <i className="fa-solid fa-list-check me-2"></i>Tùy chọn món ăn
-        </h6>
-        <button type="button" className="btn btn-sm btn-outline-primary" onClick={handleAddGroup}>
-          + Thêm nhóm mới
-        </button>
+      <h6 className="fw-bold text-primary mb-3">Thư viện Tùy chọn của Quán</h6>
+      
+      <div className="list-group mb-3">
+        {libraryGroups.map(group => {
+          const isSelected = options.some(o => o.id === group.id);
+          return (
+            <div key={group.id} className="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <input 
+                  type="checkbox" 
+                  className="form-check-input me-2" 
+                  checked={isSelected}
+                  onChange={() => handleToggleAssign(group.id, isSelected)}
+                  disabled={!foodId} // Chỉ cho gán khi đã có Food ID (đã lưu món)
+                />
+                <span className="fw-bold">{group.name}</span>
+                <small className="text-muted ms-2">({group.items?.length || 0} lựa chọn)</small>
+              </div>
+              <button type="button" className="btn btn-sm btn-link text-danger">Sửa nhóm</button>
+            </div>
+          );
+        })}
       </div>
 
-      {options.length === 0 ? (
-        <p className="text-center text-muted small py-3">Chưa có tùy chọn nào.</p>
-      ) : (
-        options.map((group) => (
-          <div key={group.id} className="card mb-3 shadow-sm border-light">
-            <div className="card-body p-3">
-              <div className="fw-bold text-dark mb-2 d-flex justify-content-between">
-                <span>{group.name} {group.is_required && <span className="badge bg-danger ms-1">Bắt buộc</span>}</span>
-              </div>
-              
-              <div className="ms-3 border-start ps-3">
-                {group.items && group.items.map(item => (
-                  <div key={item.id} className="d-flex justify-content-between small text-secondary mb-1">
-                    <span>• {item.name}</span>
-                    <span>+{item.price.toLocaleString()}đ</span>
-                  </div>
-                ))}
-                
-                <button 
-                  type="button" 
-                  className="btn btn-xs btn-link p-0 text-decoration-none mt-2"
-                  onClick={() => handleAddItem(group.id)}
-                >
-                  <i className="fa-solid fa-plus me-1"></i>Thêm lựa chọn
-                </button>
-              </div>
-            </div>
-          </div>
-        ))
-      )}
+      <button 
+        type="button" 
+        className="btn btn-sm btn-outline-primary w-100"
+        onClick={() => {/* Mở modal tạo nhóm mới cho Shop */}}
+      >
+        + Tạo nhóm tùy chọn mới cho Thư viện
+      </button>
+
+      {!foodId && <p className="text-warning small mt-2">* Vui lòng lưu món ăn trước khi gán tùy chọn.</p>}
     </div>
   );
 }
