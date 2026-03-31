@@ -26,9 +26,9 @@ export default function Checkout() {
   }, []);
 
   const total = cart.reduce((sum, item) => {
-    return sum + (item.totalPrice || item.price * item.quantity);
+    const price = Number(item.totalPrice) || (Number(item.price) * (Number(item.quantity) || 1)) || 0;
+    return sum + price;
   }, 0);
-
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -141,7 +141,9 @@ export default function Checkout() {
                 <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px dashed #eee', padding: '10px 0' }}>
                   <div>
                     <strong>{item.name}</strong>
-                    <div style={{ fontSize: '0.9rem', color: '#555' }}>${item.price?.toFixed(2)}</div>
+                    <div style={{ fontSize: '0.9rem', color: '#555' }}>
+                        ${Number(item.price || 0).toFixed(2)}
+                    </div>
                   </div>
                   <button className={styles.btnRemove} onClick={() => handleRemoveItem(index)} style={{ background: 'none', border: 'none', color: 'red', cursor: 'pointer' }}>
                     <i className="fa-solid fa-trash"></i>
@@ -153,7 +155,7 @@ export default function Checkout() {
 
           <div style={{ borderTop: '2px solid #eee', paddingTop: '15px', display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 'bold', marginTop: '15px' }}>
             <span>Tổng tiền:</span>
-            <span style={{ color: '#ee4d2d' }}>${total.toFixed(2)}</span>
+            <span style={{ color: '#ee4d2d' }}>${Number(total || 0).toFixed(2)}</span>
           </div>
 
           <button

@@ -145,11 +145,13 @@ export default function Home() {
   };
 
   const quickAddToCart = (product) => {
+    const price = Number(product.price) || 0;
     addToCart({ 
       ...product,
       food_id: product.id,
       quantity: 1, 
-      totalPrice: product.price, 
+      price: price,           // Thêm dòng này
+      totalPrice: price,      // Đảm bảo đây là số
       selected_options: { size: 'M', extras: [] } 
     });
   };
@@ -254,7 +256,6 @@ export default function Home() {
                     ) : (
                       <div className={styles.imgPlaceholder}><i className="fa-solid fa-utensils"></i></div>
                     )}
-                    {product.status === 'available' && <div className={styles.badgeDeal}>-15k</div>}
                     <div className={styles.overlayHover}>
                       <span>Xem chi tiết</span>
                     </div>
@@ -263,7 +264,9 @@ export default function Home() {
                     <h4 className={styles.foodName}>{product.name}</h4>
                     <p className={styles.foodAddress}>{product.address || 'Hồ Chí Minh'}</p>
                     <div className={styles.cardBottom}>
-                      <div className={styles.priceTag}>${product.price?.toFixed(2)}</div>
+                      <div className={styles.priceTag}>
+                        ${Number(product.price || 0).toFixed(2)}
+                      </div>
                       <button 
                         className={styles.btnPlus} 
                         onClick={(e) => { 
