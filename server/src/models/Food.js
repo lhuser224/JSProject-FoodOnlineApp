@@ -10,58 +10,83 @@ const Food = {
   },
 
   findAll: async (filters = {}) => {
-    let query = 'SELECT * FROM foods WHERE 1=1';
-    const params = [];
+      let query = `
+        SELECT f.*, s.shop_name, s.shop_address, s.ward, s.district, s.province, s.image_url as shop_image
+        FROM foods f
+        JOIN shops s ON f.shop_id = s.id
+        WHERE 1=1`;
+      
+      const params = [];
 
-    if (filters.status) {
-      query += ' AND status = ?';
-      params.push(filters.status);
-    } else {
-      query += ' AND status != "hidden"';
-    }
+      // 1. Lọc theo trạng thái Shop
+      if (filters.isOpen !== 'all') {
+        const isOpenStatus = filters.isOpen !== undefined ? filters.isOpen : true;
+        query += ' AND s.is_open = ?';
+        params.push(isOpenStatus);
+      }
 
-    if (filters.shopId) {
-      query += ' AND shop_id = ?';
-      params.push(filters.shopId);
-    }
+      // 2. Lọc trạng thái món ăn
+      if (filters.status) {
+        query += ' AND f.status = ?';
+        params.push(filters.status);
+      } else {
+        query += ' AND f.status != "hidden"';
+      }
 
-    if (filters.categoryId) {
-      query += ' AND category_id = ?';
-      params.push(filters.categoryId);
-    }
+      // 3. XỬ LÝ LỌC NHIỀU CATEGORY ID (CRITICAL FIX)
+      if (filters.category_ids) {
+        let catIds = [];
+        if (typeof filters.category_ids === 'string') {
+          catIds = filters.category_ids.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+        } else if (Array.isArray(filters.category_ids)) {
+          catIds = filters.category_ids;
+        }
 
-    if (filters.search) {
-      query += ' AND name LIKE ?';
-      params.push(`%${filters.search}%`);
-    }
+        if (catIds.length > 0) {
+          const placeholders = catIds.map(() => '?').join(',');
+          query += ` AND f.category_id IN (${placeholders})`;
+          params.push(...catIds);
+        }
+      } else if (filters.categoryId) {
+        query += ' AND f.category_id = ?';
+        params.push(filters.categoryId);
+      }
 
-    if (filters.minPrice) {
-      query += ' AND price >= ?';
-      params.push(filters.minPrice);
-    }
+      // 4. Tìm kiếm & Giá
+      if (filters.search) {
+        query += ' AND f.name LIKE ?';
+        params.push(`%${filters.search}%`);
+      }
 
-    if (filters.maxPrice) {
-      query += ' AND price <= ?';
-      params.push(filters.maxPrice);
-    }
+      if (filters.minPrice) {
+        query += ' AND f.price >= ?';
+        params.push(Number(filters.minPrice));
+      }
 
-    if (filters.sortBy === 'price_asc') {
-      query += ' ORDER BY price ASC';
-    } else if (filters.sortBy === 'price_desc') {
-      query += ' ORDER BY price DESC';
-    } else {
-      query += ' ORDER BY id DESC';
-    }
+      if (filters.maxPrice) {
+        query += ' AND f.price <= ?';
+        params.push(Number(filters.maxPrice));
+      }
 
-    const limit = Number(filters.limit) || 10;
-    const offset = ((Number(filters.page) || 1) - 1) * limit;
-    query += ' LIMIT ? OFFSET ?';
-    params.push(limit, offset);
+      // 5. Sắp xếp
+      if (filters.sortBy === 'price_asc') {
+        query += ' ORDER BY f.price ASC';
+      } else if (filters.sortBy === 'price_desc') {
+        query += ' ORDER BY f.price DESC';
+      } else {
+        query += ' ORDER BY f.id DESC';
+      }
 
-    const [rows] = await db.query(query, params);
-    return rows;
-  },
+      // 6. Phân trang
+      const limit = parseInt(filters.limit) || 12; // Tăng limit cho grid đẹp hơn
+      const offset = ((parseInt(filters.page) || 1) - 1) * limit;
+      query += ' LIMIT ? OFFSET ?';
+      params.push(limit, offset);
 
+      const [rows] = await db.query(query, params);
+      return rows;
+    },
+  
   findById: async (id) => {
     const [rows] = await db.query('SELECT * FROM foods WHERE id = ?', [id]);
     return rows[0] || null;

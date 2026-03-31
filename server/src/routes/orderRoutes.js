@@ -7,7 +7,6 @@ const router = express.Router();
 router.post(
   '/', 
   authMiddleware.verifyToken, 
-  authMiddleware.isCustomer, 
   validateCreateOrder, 
   orderController.create
 );
@@ -15,7 +14,6 @@ router.post(
 router.get(
   '/user/orders', 
   authMiddleware.verifyToken, 
-  authMiddleware.isCustomer, 
   orderController.getByUserId
 );
 

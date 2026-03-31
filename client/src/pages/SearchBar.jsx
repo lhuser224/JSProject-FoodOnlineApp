@@ -17,7 +17,7 @@ export default function SearchBar({ onSearch, initialValue, className }) {
     <div className={`${styles.searchBoxLarge} ${className}`}> 
       <input
         type="text"
-        placeholder="Tìm địa điểm, món ăn..."
+        placeholder="Find foods ..."
         value={term}
         onChange={(e) => setTerm(e.target.value)}
         onKeyDown={handleKeyDown}

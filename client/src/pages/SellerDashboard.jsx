@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import foodService from '../services/foodService';
-import { getMyShopInfo } from '../services/shopService';
+import { getMyShopInfo, toggleShopOpen  } from '../services/shopService';
 import FoodModal from './FoodModal';
 
-const SERVER_URL = 'http://localhost:3000'; // Đảm bảo trùng với backend
+const SERVER_URL = 'http://localhost:3000'; 
 
 export default function ShopDashboard() {
   const { user } = useAuth();
@@ -43,9 +43,10 @@ export default function ShopDashboard() {
       console.error(err);
     }
   };
+
   const handleToggleOpen = async () => {
     try {
-      const res = await shopService.toggleShopOpen(shop.id);
+      const res = await toggleShopOpen(shop.id);
       if (res.success) {
         setShop({ ...shop, is_open: !shop.is_open });
       }
@@ -53,10 +54,10 @@ export default function ShopDashboard() {
       alert("Không thể cập nhật trạng thái cửa hàng: " + err.message);
     }
   };
+
   const handleOpenModal = (food = null) => {
     if (food) {
       setCurrentFood(food);
-      // Khi sửa, imageFile được reset để chờ người dùng chọn ảnh mới (nếu muốn)
       setFormData({ ...food, options: food.options || [], imageFile: null });
     } else {
       setCurrentFood(null);
@@ -65,11 +66,9 @@ export default function ShopDashboard() {
     setShowModal(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
       setLoading(true);
-      // Gửi toàn bộ formData (bao gồm imageFile và image_url cũ)
       if (currentFood) {
         await foodService.updateFood(currentFood.id, formData);
       } else {
@@ -110,7 +109,7 @@ export default function ShopDashboard() {
             checked={shop?.is_open || false} 
             onChange={handleToggleOpen} 
           />
-          <label className={`form-check-label small ${shop?.is_open ? 'text-success' : 'text-muted'}`} htmlFor="shopOpenStatus">
+          <label className={`form-check-label small ${shop?.is_open ? 'text-success' : 'text-muted'}`} htmlFor="toggleOpen">
             {shop?.is_open ? 'Opening' : 'Closing'}
           </label>
         </div>

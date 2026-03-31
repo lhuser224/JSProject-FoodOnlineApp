@@ -3,34 +3,26 @@ const foodService = require('../services/foodService');
 const foodController = {
   async getAll(req, res) {
     try {
-      const { shopId, categoryId, search, status, limit, page, minPrice, maxPrice, sortBy } = req.query;
+      // Lấy tất cả query params từ URL
+      const { category_ids, categoryId, ...restQueries } = req.query;
 
       const result = await foodService.getAll({
-        shopId: shopId ? parseInt(shopId) : undefined,
-        categoryId: categoryId ? parseInt(categoryId) : undefined,
-        search,
-        status,
-        limit,
-        page,
-        minPrice,
-        maxPrice,
-        sortBy
+        ...restQueries,
+        // Ưu tiên category_ids từ chuỗi filter, nếu không có mới dùng categoryId lẻ
+        category_ids: category_ids || categoryId,
+        limit: req.query.limit ? parseInt(req.query.limit) : 12,
+        page: req.query.page ? parseInt(req.query.page) : 1
       });
 
       res.status(200).json({
         success: true,
         message: 'Foods retrieved successfully',
-        data: result
+        data: result // Trả về mảng món ăn trực tiếp
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-        data: null
-      });
+      res.status(500).json({ success: false, message: error.message });
     }
   },
-
   async getById(req, res) {
     try {
       const { id } = req.params;

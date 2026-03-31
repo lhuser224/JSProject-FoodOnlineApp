@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Checkout from './pages/Checkout';
 import History from './pages/History';
+import OrderDetail from './pages/OrderDetail';
 import SellerDashboard from './pages/SellerDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SellerRegistration from './pages/SellerRegistration';
@@ -26,6 +27,8 @@ export default function App() {
             <Route path="/register-seller" element={<SellerRegistration />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/history" element={<History />} />
+            <Route path="/order/:id" element={<OrderDetail />} />
+            
             <Route path="/shop/dashboard" element={<SellerDashboard />} />
           </Routes>
         </BrowserRouter>

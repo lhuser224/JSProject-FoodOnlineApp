@@ -9,7 +9,7 @@ const optionGroupService = {
   },
 
   async getByShop(shopId) {
-    return await OptionGroup.findByShop(shopId);
+    return await OptionGroup.findByShopWithItems(shopId);
   },
 
   async getById(id) {

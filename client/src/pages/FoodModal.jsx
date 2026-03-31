@@ -28,9 +28,6 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (formData.image_url && formData.image_url.startsWith('blob:')) {
-        URL.revokeObjectURL(formData.image_url);
-      }
       setFormData({
         ...formData,
         imageFile: file,
@@ -41,10 +38,9 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
 
   const getImageUrl = () => {
     if (!formData.image_url) return 'https://via.placeholder.com/150?text=No+Image';
-    if (formData.image_url.startsWith('blob:')) return formData.image_url;
-    // Nếu image_url đã có http sẵn (từ placeholder hoặc server khác) thì trả về luôn
-    if (formData.image_url.startsWith('http')) return formData.image_url;
-    // Mặc định nối với SERVER_URL cho ảnh từ backend
+    if (formData.image_url.startsWith('blob:') || formData.image_url.startsWith('http')) {
+      return formData.image_url;
+    }
     return `${SERVER_URL}${formData.image_url}`;
   };
 
@@ -52,65 +48,72 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
     <>
       <div className="modal fade show d-block" tabIndex="-1">
         <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content border-0 shadow-lg">
-            <div className="modal-header bg-dark text-white">
-              <h5 className="modal-title fw-bold">Thông tin món ăn</h5>
+          <div className="modal-content shadow-lg border-0">
+            <div className="modal-header bg-danger text-white">
+              <h5 className="modal-title fw-bold">
+                {formData.id ? 'Chỉnh sửa món ăn' : 'Thêm món mới'}
+              </h5>
               <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
             </div>
-            
-            <form onSubmit={onSave}>
-              <div className="modal-body p-4" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
-                <div className="row">
-                  <div className="col-md-7">
+
+            <form onSubmit={(e) => { e.preventDefault(); onSave(); }}>
+              <div className="modal-body p-4" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                <div className="row g-3">
+                  <div className="col-md-8">
                     <div className="mb-3">
-                      <label className="form-label small fw-bold">Tên món ăn</label>
-                      <input type="text" className="form-control" required 
-                        value={formData.name || ''} 
-                        onChange={e => setFormData({...formData, name: e.target.value})} />
+                      <label className="form-label fw-bold">Tên món ăn</label>
+                      <input 
+                        type="text" className="form-control" required
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        placeholder="Ví dụ: Cơm tấm sườn bì chả"
+                      />
                     </div>
-
                     <div className="row">
-                      <div className="col-6 mb-3">
-                        <label className="form-label small fw-bold">Giá ($)</label>
-                        <input type="number" step="0.01" className="form-control" required 
-                          value={formData.price || ''} 
-                          onChange={e => setFormData({...formData, price: e.target.value})} />
+                      <div className="col-md-6 mb-3">
+                        <label className="form-label fw-bold">Giá bán ($)</label>
+                        <input 
+                          type="number" className="form-control" required
+                          value={formData.price}
+                          onChange={(e) => setFormData({...formData, price: e.target.value})}
+                        />
                       </div>
-
-                      <div className="col-6 mb-3">
-                        <label className="form-label small fw-bold">Danh mục</label>
+                      <div className="col-md-6 mb-3">
+                        <label className="form-label fw-bold">Danh mục</label>
                         <select 
-                          className="form-select" 
-                          required
-                          value={formData.category_id || ''} 
-                          onChange={e => setFormData({...formData, category_id: e.target.value})}
+                          className="form-select"
+                          value={formData.category_id}
+                          onChange={(e) => setFormData({...formData, category_id: e.target.value})}
                         >
-                          <option value="">-- Chọn danh mục --</option>
-                          {categories.map((cat) => (
+                          {categories.map(cat => (
                             <option key={cat.id} value={cat.id}>{cat.name}</option>
                           ))}
                         </select>
                       </div>
                     </div>
-
-                    <div className="mb-3">
-                      <label className="form-label small fw-bold">Hình ảnh món ăn</label>
-                      <input type="file" className="form-control" accept="image/*" onChange={handleFileChange} />
-                    </div>
                   </div>
 
-                  <div className="col-md-5 border-start d-flex flex-column align-items-center justify-content-center bg-light rounded">
-                    <p className="small fw-bold text-muted mb-2">Xem trước hình ảnh</p>
-                    <div className="border bg-white rounded" style={{ width: '100%', height: '150px', overflow: 'hidden' }}>
-                      <img 
-                        src={getImageUrl()} 
-                        alt="Preview" 
-                        className="w-100 h-100" style={{ objectFit: 'cover' }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'https://via.placeholder.com/150?text=Error+Image';
-                        }}
+                  <div className="col-md-4 text-center">
+                    <label className="form-label fw-bold d-block">Ảnh minh họa</label>
+                    <div className="position-relative mb-2">
+                      <div className="border bg-light rounded d-flex align-items-center justify-content-center" style={{ width: '100%', height: '150px', overflow: 'hidden' }}>
+                        <img 
+                          src={getImageUrl()} 
+                          alt="Preview" 
+                          className="w-100 h-100" style={{ objectFit: 'cover' }}
+                        />
+                      </div>
+                      <input 
+                        type="file" id="fileInput" hidden accept="image/*"
+                        onChange={handleFileChange}
                       />
+                      <button 
+                        type="button" 
+                        className="btn btn-sm btn-dark position-absolute bottom-0 end-0 m-2"
+                        onClick={() => document.getElementById('fileInput').click()}
+                      >
+                        <i className="fa-solid fa-camera"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -128,7 +131,9 @@ export default function FoodModal({ show, onClose, formData, setFormData, onSave
               <div className="modal-footer bg-light">
                 <button type="button" className="btn btn-secondary px-4" onClick={onClose}>Hủy</button>
                 <button type="submit" className="btn btn-danger px-4" disabled={loading}>
-                  {loading ? 'Đang lưu...' : 'Xác nhận món'}
+                  {loading ? (
+                    <><span className="spinner-border spinner-border-sm me-2"></span>Lưu...</>
+                  ) : 'Xác nhận món'}
                 </button>
               </div>
             </form>

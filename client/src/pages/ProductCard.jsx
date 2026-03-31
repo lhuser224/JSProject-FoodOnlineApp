@@ -14,22 +14,16 @@ export default function ProductCard({ product, onClick, onQuickAdd }) {
   };
 
   const displayAddress = () => {
+    if (!product) return 'Hồ Chí Minh';
     const shop = product.shop || {};
-    
-    // Sửa tại đây: Database dùng 'shop_address' chứ không phải 'address'
-    const detail = product.address || shop.shop_address; 
-    const ward = product.ward || shop.ward;
-    const district = product.district || shop.district;
-    const province = product.province || product.city || shop.province || shop.city;
+    const parts = [
+      product.address || shop.address,
+      product.ward || shop.ward,
+      product.district || shop.district,
+      product.province || product.city || shop.province || shop.city
+    ].filter(part => part && typeof part === 'string' && part.trim() !== '');
 
-    // Lọc các phần tử không trống
-    const addressParts = [detail, ward, district, province]
-      .filter(part => part && typeof part === 'string' && part.trim() !== '');
-
-    // Nếu mảng có dữ liệu thì nối lại bằng dấu phẩy, nếu không mới hiện mặc định
-    return addressParts.length > 0 
-      ? addressParts.join(', ') 
-      : 'Hồ Chí Minh';
+    return parts.length > 0 ? parts.join(', ') : 'Hồ Chí Minh';
   };
 
   const imgPath = getImageUrl();
@@ -44,7 +38,7 @@ export default function ProductCard({ product, onClick, onQuickAdd }) {
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = 'https://via.placeholder.com/150?text=Image+Error';
+              e.target.src = 'https://via.placeholder.com/300?text=Food+Image';
             }}
           />
         ) : (
@@ -52,15 +46,17 @@ export default function ProductCard({ product, onClick, onQuickAdd }) {
             <i className="fa-solid fa-utensils"></i>
           </div>
         )}
+        <div className={styles.overlayHover}>Xem chi tiết</div>
       </div>
       
       <div className={styles.cardDetails}>
-        <h4>{product.name}</h4>
-        {/* Hiển thị địa chỉ chi tiết */}
+        <h4 className={styles.foodName}>{product.name}</h4>
+        
         <p className={styles.foodAddress} title={displayAddress()}>
-          <i className="fa-solid fa-location-dot" style={{ fontSize: '0.8rem', marginRight: '4px' }}></i>
+          <i className="fa-solid fa-location-dot" style={{ color: '#f15233', marginRight: '5px' }}></i>
           {displayAddress()}
         </p>
+
         <div className={styles.cardBottom}>
           <div className={styles.priceTag}>
             ${Number(product.price || 0).toFixed(2)}

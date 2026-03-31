@@ -1,0 +1,42 @@
+.detailPage {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.infoCard {
+  border-radius: 12px;
+}
+
+.title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #666;
+  border-left: 4px solid #ee4d2d;
+  padding-left: 10px;
+}
+
+.imgContainer img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
+.priceHighlight {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ee4d2d;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pending { background: #fff8e1; color: #ffa000; }
+.completed { background: #e8f5e9; color: #2e7d32; }
+.cancelled { background: #ffebee; color: #c62828; }
+.shipping { background: #e3f2fd; color: #1976d2; }

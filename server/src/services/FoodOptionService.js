@@ -8,6 +8,12 @@ const foodOptionService = {
     return await FoodOption.assignGroupToFood(foodId, groupId);
   },
 
+  async removeGroup(foodId, groupId) {
+    const food = await Food.findById(foodId);
+    if (!food) throw new Error('Food not found');
+    return await FoodOption.removeGroupFromFood(foodId, groupId);
+  },
+
   async getFullCustomization(foodId) {
     const food = await Food.findById(foodId);
     if (!food) throw new Error('Food not found');

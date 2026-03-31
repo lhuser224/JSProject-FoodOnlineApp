@@ -1,6 +1,6 @@
 import axiosClient from '../api/axiosClient';
 
-const BASE_URL = 'FoodO/categories'; 
+const BASE_URL = '/FoodO/categories'; 
 
 const categoryService = {
   getAllCategories: async (params = {}) => {

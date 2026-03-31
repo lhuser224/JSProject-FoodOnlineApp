@@ -1,4 +1,3 @@
-// models/OptionGroup.js
 const db = require('../config/db');
 
 const OptionGroup = {
@@ -29,6 +28,22 @@ const OptionGroup = {
       [shopId]
     );
     return rows;
+  },
+
+  async findByShopWithItems(shopId) {
+    const [groups] = await db.query(
+      'SELECT * FROM option_groups WHERE shop_id = ?',
+      [shopId]
+    );
+
+    for (let group of groups) {
+      const [items] = await db.query(
+        'SELECT * FROM option_items WHERE group_id = ?',
+        [group.id]
+      );
+      group.items = items;
+    }
+    return groups;
   }
 };
 

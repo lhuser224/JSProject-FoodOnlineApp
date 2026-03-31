@@ -5,22 +5,37 @@ const foodOptionService = require('../services/FoodOptionService');
 const optionController = {
   async createGroup(req, res) {
     try {
-      const { name, is_required, is_multiple, max_choices, shop_id } = req.body;
-      const result = await optionGroupService.create({
-        shop_id, name, is_required, is_multiple, max_choices
-      });
-      res.status(201).json({ success: true, data: result });
+      const group = await optionGroupService.create(req.body);
+      res.status(201).json(group);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(400).json({ message: error.message });
     }
   },
 
   async addItem(req, res) {
     try {
-      const result = await optionItemService.create(req.body);
-      res.status(201).json({ success: true, data: result });
+      const item = await optionItemService.create(req.body);
+      res.status(201).json(item);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(400).json({ message: error.message });
+    }
+  },
+
+  async getGroupsByShop(req, res) {
+    try {
+      const groups = await optionGroupService.getByShop(req.params.shopId);
+      res.json(groups);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  async getFoodCustomization(req, res) {
+    try {
+      const customization = await foodOptionService.getFullCustomization(req.params.foodId);
+      res.json(customization);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -28,19 +43,19 @@ const optionController = {
     try {
       const { foodId, groupId } = req.body;
       await foodOptionService.assignGroup(foodId, groupId);
-      res.status(200).json({ success: true, message: 'Gán tùy chọn thành công' });
+      res.json({ message: 'Assigned successfully' });
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(400).json({ message: error.message });
     }
   },
 
-  async getFoodCustomization(req, res) {
+  async removeFromFood(req, res) {
     try {
-      const { foodId } = req.params;
-      const result = await foodOptionService.getFullCustomization(foodId);
-      res.status(200).json({ success: true, data: result });
+      const { foodId, groupId } = req.body;
+      await foodOptionService.removeGroup(foodId, groupId);
+      res.json({ message: 'Removed successfully' });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res.status(400).json({ message: error.message });
     }
   }
 };

@@ -187,3 +187,25 @@
   .orderId { border-left: none; margin-left: 0; padding-left: 0; }
   .orderFooter { flex-direction: column; gap: 15px; align-items: flex-start; }
 }
+/* Đảm bảo Badge có màu sắc để phân biệt */
+.badge.completed { color: #26aa99; background: #f6fffe; }
+.badge.shipping { color: #ee4d2d; background: #fff5f1; }
+.badge.pending { color: #ffba00; background: #fffcf5; }
+
+/* Quan trọng: Fix lỗi dính chữ Shop Name và Mã đơn */
+.orderHeader div {
+  display: flex;
+  align-items: center;
+}
+
+/* Fix lỗi các món ăn không có khoảng cách */
+.orderContent {
+  padding: 10px 0;
+}
+
+/* Container bao ngoài để tránh các card dính sát lề */
+.orderListContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Khoảng cách giữa các đơn hàng */
+}
